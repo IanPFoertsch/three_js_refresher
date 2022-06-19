@@ -3,14 +3,18 @@ import * as THREE from 'three'
 class Node {
   constructor(scene, position) {
     this.position = position
-    this.inner_icon = new NodeIcon()
-    this.outer_ring_geometry = new THREE.RingGeometry(2, 2.2, 20);
-    this.ring_material = new THREE.MeshToonMaterial({ color: 0x666666 });
-    this.ring = new THREE.Mesh(this.outer_ring_geometry, this.ring_material);
-    this.ring.position.set(this.position[0], this.position[1], 0)
+    // const geometry = new THREE.TorusGeometry(10, 3, 16, 100);
+    // const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+    // const torus = new THREE.Mesh(geometry, material);
+    // scene.add(torus);
+    // this.outer_ring_geometry = new THREE.TorusGeometry(2, 0.2, 8, 8);
 
+    // this.ring_material = new THREE.MeshPhongMaterial({ color: 0x999999 });
+    // this.ring = new THREE.Mesh(this.outer_ring_geometry, this.ring_material);
+    // this.ring.position.set(this.position[0], this.position[1], 0)
+    this.ring = new Ring(this.position, { color: 0x999999 }, scene)
     this.icon = new TriangleIcon(this.position, { color: 0xFF0000 }, scene)
-    scene.add(this.ring)
+
   }
 }
 
@@ -50,16 +54,34 @@ class NodeFactory {
 //How to organize shapes before adding them to a scene?
 // rotate the geometry to get it right side up
 
+class Ring {
+  constructor(position, color, scene) {
+    this.geometry = new THREE.TorusGeometry(2, 0.2, 8, 8);
+
+    this.material = new THREE.MeshPhongMaterial({ color: 0x999999 });
+    this.mesh = new THREE.Mesh(this.geometry, this.material);
+    this.mesh.position.set(position[0], position[1], 0)
+    scene.add(this.mesh)
+   }
+}
+
 class NodeIcon {
   constructor() {}
 }
 
 class TriangleIcon extends NodeIcon {
   constructor(position, color, scene) {
+
+    // const geometry = new
+    // const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+    // const cone = new THREE.Mesh(geometry, material);
+    // scene.add(cone);
     super()
     this.position = [position[0], position[1]]
-    this.geometry = new THREE.CircleGeometry(2, 3)
-    this.material = new THREE.MeshToonMaterial(color)
+    this.geometry = new THREE.ConeGeometry(4, 2, 3);
+    this.geometry.rotateX(90 * (Math.PI / 180))
+    this.geometry.rotateZ(90 * (Math.PI / 180))
+    this.material = new THREE.MeshPhongMaterial(color)
     this.mesh = new THREE.Mesh(this.geometry, this.material)
     this.mesh.position.set(this.position[0], this.position[1], 0)
     this.mesh.rotateZ(90*(Math.PI/180))
