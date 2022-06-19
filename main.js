@@ -20,43 +20,94 @@ const renderer = new THREE.WebGLRenderer({
 })
 
 
-// Source: https://www.youtube.com/watch?v=a0qSHBnqORU
+// Raycasting source: https://stackoverflow.com/a/12749287
 const raycaster = new THREE.Raycaster()
 const clickMouse = new THREE.Vector2()
-const moveMouse = new THREE.Vector2()
-var draggable = new THREE.Object3D()
+const mouse = new THREE.Vector2()
 
-window.addEventListener('click', event => {
-  //source: https://threejs.org/docs/#api/en/core/Raycaster
-	// calculate pointer position in normalized device coordinates
-	// (-1 to +1) for both components
-  clickMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-  clickMouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
-  raycaster.setFromCamera(clickMouse, camera)
-  const found = raycaster.intersectObjects(scene.children)
-  console.log(found)
+
+var objects = []
+const geometry = new THREE.PlaneGeometry(100, 100);
+const material = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.DoubleSide });
+const plane = new THREE.Mesh(geometry, material);
+scene.add(plane)
+objects.push(plane)
+var line;
+var state = {}
+
+window.addEventListener('mousemove', event => {
+
+  if (state.mouse_down == true) {
+    var world_coordinates = get_world_intersection(event)
+
+    const positions = line.geometry.attributes.position.array;
+    positions[3] = world_coordinates.x
+    positions[4] = world_coordinates.y
+    positions[5] = 0
+    line.geometry.attributes.position.needsUpdate = true
+
+  }
 })
 
+window.addEventListener("mousedown", event => {
+  var world_coordinates = get_world_intersection(event)
 
-//Draw three circles
-Array.from(Array(3).keys()).forEach((i) => {
-  console.log("iterating for ", i, " x, y = ", Math.sin(i))
+  if (line == undefined) {
+    const MAX_POINTS = 2
+    const geometry = new THREE.BufferGeometry()
+    var positions = new Float32Array(MAX_POINTS * 3)
+    geometry.setDrawRange(0, 2)
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const material = new THREE.LineBasicMaterial({ color: 0xFFFF00 })
+    line = new THREE.Line(geometry, material);
+  }
+  var positions = line.geometry.attributes.position.array;
+
+  positions[0] = world_coordinates.x
+  positions[1] = world_coordinates.y
+  positions[2] = 0
+  line.geometry.attributes.position.needsUpdate = true
+
+  console.log(positions)
+
+
+
+  state.mouse_down = true
+
+  scene.add(line);
+
+  // const positions = line.geometry.attributes.position.array
+
+})
+
+window.addEventListener("mouseup", event => {
+  var world_coordinates = get_world_intersection(event)
+  state.mouse_down = false
+})
+
+const get_world_intersection = function(mouse_event) {
+  mouse.x = (mouse_event.clientX / window.innerWidth) * 2 - 1
+  mouse.y = - (mouse_event.clientY / window.innerHeight) * 2 + 1
+
+  raycaster.setFromCamera(mouse, camera)
+  var intersects = raycaster.intersectObjects(objects)
+  if (intersects.length > 0) {
+    //Currently just selecting the world plane intersection
+    //We need to expand this to filter out non-world plane objects
+    // We also need to add non-world-plane objects to the object list
+    // to make them clickable in an expanded event handler
+    return intersects[0].point
+  }
+}
+
+
+
+//Draw six circles
+Array.from(Array(6).keys()).forEach((i) => {
+
   // var node = new Node(scene, i)
   NodeFactory.construct_triangle(scene, [20,20])
 })
-
-
-
-
-// Need the node class to have an inner icon and color
-// Need a node shape class
-
-
-
-
-//Materials == color &|| texture, a wrapping for a geometry
-//Mesh basic materials require no light source bouncing off them
-
 
 // const pointLight = new THREE.PointLight(0xffffff)
 

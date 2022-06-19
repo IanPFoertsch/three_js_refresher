@@ -15,11 +15,26 @@ class Node {
 }
 
 class NodeFactory {
+
+  static #position_n = 0
+
   static construct_triangle = function(scene, bounds) {
-    console.log(Math.random * bounds[1])
-    var position = [this.random_coordinate(bounds[0]),this.random_coordinate(bounds[1])]
-    console.log(position)
+    var position = this.fixed_position(bounds)
     var node = new Node(scene, position)
+  }
+
+  static fixed_position = function() {
+    this.#position_n += 1
+    var coordinates = [
+      Math.cos(this.#position_n) * -10,
+      Math.sin(this.#position_n) * 10
+    ]
+    // console.log(coordinates)
+    return coordinates
+  }
+
+  static random_position = function(bounds) {
+    return [this.random_coordinate(bounds[0]), this.random_coordinate(bounds[1])]
   }
 
   static random_coordinate = function(bound) {
