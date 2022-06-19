@@ -3,6 +3,7 @@ import * as THREE from 'three'
 import { PointLight, PointLightHelper } from 'three'
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { Node, NodeFactory } from "./node"
+import { NodeLink } from "./node_link"
 
 
 const scene = new THREE.Scene()
@@ -32,19 +33,14 @@ const material = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.Doub
 const plane = new THREE.Mesh(geometry, material);
 scene.add(plane)
 objects.push(plane)
-var line;
+var link;
 var state = {}
 
 window.addEventListener('mousemove', event => {
 
   if (state.mouse_down == true) {
     var world_coordinates = get_world_intersection(event)
-
-    const positions = line.geometry.attributes.position.array;
-    positions[3] = world_coordinates.x
-    positions[4] = world_coordinates.y
-    positions[5] = 0
-    line.geometry.attributes.position.needsUpdate = true
+    link.update_destination(world_coordinates.x, world_coordinates.y)
 
   }
 })
@@ -52,32 +48,12 @@ window.addEventListener('mousemove', event => {
 window.addEventListener("mousedown", event => {
   var world_coordinates = get_world_intersection(event)
 
-  if (line == undefined) {
-    const MAX_POINTS = 2
-    const geometry = new THREE.BufferGeometry()
-    var positions = new Float32Array(MAX_POINTS * 3)
-    geometry.setDrawRange(0, 2)
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    const material = new THREE.LineBasicMaterial({ color: 0xFFFF00 })
-    line = new THREE.Line(geometry, material);
+  if (link == undefined) {
+    link = new NodeLink(scene)
   }
-  var positions = line.geometry.attributes.position.array;
-
-  positions[0] = world_coordinates.x
-  positions[1] = world_coordinates.y
-  positions[2] = 0
-  line.geometry.attributes.position.needsUpdate = true
-
-  console.log(positions)
-
-
+  link.update_origin(world_coordinates.x, world_coordinates.y)
 
   state.mouse_down = true
-
-  scene.add(line);
-
-  // const positions = line.geometry.attributes.position.array
-
 })
 
 window.addEventListener("mouseup", event => {
