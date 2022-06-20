@@ -3,18 +3,8 @@ import * as THREE from 'three'
 class Node {
   constructor(scene, position) {
     this.position = position
-    // const geometry = new THREE.TorusGeometry(10, 3, 16, 100);
-    // const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-    // const torus = new THREE.Mesh(geometry, material);
-    // scene.add(torus);
-    // this.outer_ring_geometry = new THREE.TorusGeometry(2, 0.2, 8, 8);
-
-    // this.ring_material = new THREE.MeshPhongMaterial({ color: 0x999999 });
-    // this.ring = new THREE.Mesh(this.outer_ring_geometry, this.ring_material);
-    // this.ring.position.set(this.position[0], this.position[1], 0)
     this.ring = new Ring(this.position, { color: 0x999999 }, scene)
     this.icon = new TriangleIcon(this.position, { color: 0xFF0000 }, scene)
-
   }
 }
 
@@ -24,7 +14,7 @@ class NodeFactory {
 
   static construct_triangle = function(scene, bounds) {
     var position = this.fixed_position(bounds)
-    var node = new Node(scene, position)
+    return  new Node(scene, position)
   }
 
   static fixed_position = function() {
