@@ -13,7 +13,7 @@ class NodeLink {
     this.geometry.setAttribute('position', new THREE.BufferAttribute(this.positions, 3));
 
     this.material = new THREE.LineBasicMaterial({ color: 0xFFFF00 })
-    this.line = new THREE.Line(this.geometry, this.material);
+    this.mesh = new THREE.Line(this.geometry, this.material);
 
     // scene.add(this.line)
   }
@@ -29,13 +29,19 @@ class NodeLink {
     //TODO: we need a better way to track if objects are currently added
     // to the scene
     if (this.rendered === false) {
-      this.scene.add(this.line)
+      this.scene.add(this.mesh)
       this.rendered = true
     }
     this.positions[3] = x
     this.positions[4] = y
     //TODO: can we simplify this access?
-    this.line.geometry.attributes.position.needsUpdate = true
+    this.mesh.geometry.attributes.position.needsUpdate = true
+  }
+
+  dispose() {
+    this.geometry.dispose()
+    this.material.dispose()
+    this.scene.remove(this.mesh)
   }
 }
 

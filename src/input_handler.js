@@ -17,41 +17,48 @@ class InputHandler {
 
 
   mouse_move = function(event) {
-
     if (this.state.mouse_down == true) {
-
       // if we've created a node_link
-      if (this.link !== undefined) {
+      if (this.state.is_open_link()) {
         var world_coordinates = this.get_world_intersection(event)
 
-        this.link.draw_to_point(world_coordinates.x, world_coordinates.y)
+        this.state.get_open_link().draw_to_point(world_coordinates.x, world_coordinates.y)
+      } else {
+        // mouse down & no open link = drag navigating
+        // implement drag navigating here
       }
-      // link.update_destination(world_coordinates.x, world_coordinates.y)
-
     }
   }
 
   mouse_down = function(event) {
-    var world_coordinates = this.get_world_intersection(event)
-    //Make selection
     var clicked_object = this.get_clicked_object(event)
-    // notes on == vs ===
-    // == => determines equality by value comparison using type coersion
-    //    thus 77 == '77' is true
-    // === => determines equality by value and type comparison, with
-    //    no type coersion, therefore 77 === '77' is false
+
     if (clicked_object !== undefined) {
       var link = new NodeLink(this.scene)
       link.set_origin(clicked_object.position.x, clicked_object.position.y)
-      // set the link origin as = the object's position
-      this.link = link
+      this.state.register_open_link(link)
+    } else {
+      // mousedown not on a clickable object
+      // start drag navigating
     }
 
     this.state.mouse_down = true
   }
 
   mouse_up = function(event) {
-    var world_coordinates = this.get_world_intersection(event)
+    var clicked_object = this.get_clicked_object(event)
+
+    if (this.state.is_open_link()) {
+      if (clicked_object !== undefined) {
+        this.state.close_link_to_point(clicked_object.position.x, clicked_object.position.y)
+      } else {
+        //if we're not intersecting a clickable/linkable object, let's destroy the link
+        this.state.destroy_open_link()
+      }
+    } else {
+      // If there's no open link, end drag navigating
+    }
+
     this.state.mouse_down = false
   }
 
