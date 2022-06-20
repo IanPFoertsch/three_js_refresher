@@ -6,7 +6,6 @@ class State {
     this.links = []
     this.world_plane = null
     this.open_link = null
-    // Raycasting source: https://stackoverflow.com/a/12749287
   }
 
   register_world_plane = function(plane) {
@@ -33,7 +32,7 @@ class State {
   }
 
   is_open_link = function() {
-    return this.get_open_link() !== undefined
+    return this.get_open_link() !== null
   }
 
   get_open_link = function() {

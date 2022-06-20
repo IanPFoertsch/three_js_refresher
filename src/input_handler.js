@@ -84,7 +84,7 @@ class InputHandler {
       throw `Calculating Intersects requires an array: ${objects_to_check} is not an array`
     }
     this.set_mouse_coordinates(mouse_event, this.mouse)
-
+    // Raycasting source: https://stackoverflow.com/a/12749287
     this.raycaster.setFromCamera(this.mouse, this.camera)
 
     return this.raycaster.intersectObjects(objects_to_check)
