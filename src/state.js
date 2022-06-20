@@ -6,15 +6,10 @@ import * as THREE from 'three'
 // I think it should just be gamestate.
 class State {
   constructor() {
-    this.camera = new THREE.PerspectiveCamera(
-      75, // field of view -> in degrees? instead of Rads
-      window.innerWidth / window.innerHeight, //Aspect Ratio
-      0.1, // start plane of frustrum
-      1000 // end plane of frustrum
-    )
+    this.nodes = []
+    this.links = []
+    this.world_plane = null
     // Raycasting source: https://stackoverflow.com/a/12749287
-    this.raycaster = new THREE.Raycaster()
-    this.mouse = new THREE.Vector2()
   }
 }
 
