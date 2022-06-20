@@ -31,6 +31,8 @@ class InputHandler {
   }
 
   mouse_down = function(event) {
+    var world_coordinates = this.get_world_intersection(event)
+    console.log("Look here at the world coordinates", world_coordinates)
     var clicked_object = this.get_clicked_object(event)
 
     if (clicked_object !== undefined) {

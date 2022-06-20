@@ -2,7 +2,7 @@ import './../style.css'
 import * as THREE from 'three'
 import { PointLight, PointLightHelper } from 'three'
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
-import { Node, NodeFactory } from "./node"
+import { NodeOne, NodeTwo } from "./node"
 import { NodeLink } from "./node_link"
 import { InputHandler } from './input_handler'
 import { State } from './state'
@@ -18,13 +18,14 @@ const generate_world = function() {
   const plane = new THREE.Mesh(geometry, material);
   game.add_world_plane(plane)
 
+  game.add_node(new NodeOne(game.scene, [-9, 9], 0xFF0000))
+  game.add_node(new NodeOne(game.scene, [-14, 3], 0x0000FF))
+  game.add_node(new NodeOne(game.scene, [-2, 9], 0xFFFF00))
 
-  //TODO: stop using this stupid way to setup a game state, get a real map creation method going.
-  Array.from(Array(6).keys()).forEach((i) => {
-    //TODO: do we still need to pass the scene to the node construction? ->
-    // -> yes, because our js object is adding itself to the scene
-    game.add_node(NodeFactory.construct_triangle(game.scene, [20, 20]))
-  })
+  game.add_node(new NodeTwo(game.scene, [-11, -8], 0xFF00FF))
+  game.add_node(new NodeTwo(game.scene, [1, 1], 0x00FF00))
+  game.add_node(new NodeTwo(game.scene, [-1, -8], 0xFF0000))
+  game.add_node(new NodeTwo(game.scene, [-1, -8], 0xFFA500))
 
   const directionalLight = new THREE.DirectionalLight(0xffffff)
   directionalLight.position.set(10, 10, 10)
