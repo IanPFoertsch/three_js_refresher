@@ -18,10 +18,19 @@ class NodeLink {
     // scene.add(this.line)
   }
 
-  set_origin(x, y) {
-    this.positions[0] = x
-    this.positions[1] = y
-    //TODO: can we simplify this access?
+  is_valid_link(destination_node) {
+    //get the color and tier of the originating node
+    // compare it to the color and tier of the destination node
+
+  }
+
+  set_origin(origin_node) {
+
+    this.origin_node = origin_node
+
+    this.positions[0] = this.origin_node.position.x
+    this.positions[1] = this.origin_node.position.y
+    console.log(this.positions[0], this.positions[1])
     // this.line.geometry.attributes.position.needsUpdate = true
   }
 

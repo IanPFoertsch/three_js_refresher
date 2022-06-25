@@ -32,12 +32,13 @@ class InputHandler {
 
   mouse_down = function(event) {
     var world_coordinates = this.get_world_intersection(event)
-    console.log("Look here at the world coordinates", world_coordinates)
+
     var clicked_object = this.get_clicked_object(event)
 
     if (clicked_object !== undefined) {
       var link = new NodeLink(this.scene)
-      link.set_origin(clicked_object.position.x, clicked_object.position.y)
+
+      link.set_origin(clicked_object)
       this.state.register_open_link(link)
     } else {
       // mousedown not on a clickable object

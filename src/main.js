@@ -2,7 +2,7 @@ import './../style.css'
 import * as THREE from 'three'
 import { PointLight, PointLightHelper } from 'three'
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
-import { NodeOne, NodeTwo } from "./node"
+import { Node } from "./node"
 import { NodeLink } from "./node_link"
 import { InputHandler } from './input_handler'
 import { State } from './state'
@@ -18,14 +18,13 @@ const generate_world = function() {
   const plane = new THREE.Mesh(geometry, material);
   game.add_world_plane(plane)
 
-  game.add_node(new NodeOne(game.scene, [-9, 9], 0xFF0000))
-  game.add_node(new NodeOne(game.scene, [-14, 3], 0x0000FF))
-  game.add_node(new NodeOne(game.scene, [-2, 9], 0xFFFF00))
+  game.add_node(new Node(game.scene, [-9, 9], Node.COLORS.RED, Node.TIERS.THREE))
+  game.add_node(new Node(game.scene, [-14, 3], Node.COLORS.BLUE, Node.TIERS.THREE))
+  game.add_node(new Node(game.scene, [-2, 9], Node.COLORS.YELLOW, Node.TIERS.THREE))
 
-  game.add_node(new NodeTwo(game.scene, [-11, -8], 0xFF00FF))
-  game.add_node(new NodeTwo(game.scene, [1, 1], 0x00FF00))
-  game.add_node(new NodeTwo(game.scene, [-1, -8], 0xFF0000))
-  game.add_node(new NodeTwo(game.scene, [-1, -8], 0xFFA500))
+  game.add_node(new Node(game.scene, [-11, -8], Node.COLORS.VIOLET, Node.TIERS.FOUR)) //RED
+  game.add_node(new Node(game.scene, [1, 1], Node.COLORS.GREEN, Node.TIERS.FOUR))
+  game.add_node(new Node(game.scene, [-1, -8], Node.COLORS.ORANGE, Node.TIERS.FOUR))
 
   const directionalLight = new THREE.DirectionalLight(0xffffff)
   directionalLight.position.set(10, 10, 10)
