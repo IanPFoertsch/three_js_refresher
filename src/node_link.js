@@ -19,17 +19,14 @@ class NodeLink {
   }
 
   is_valid_link(destination_node) {
-    //get the color and tier of the originating node
-    // compare it to the color and tier of the destination node
-
+    return this.origin_node.is_valid_link(destination_node)
   }
 
   set_origin(origin_node) {
-
     this.origin_node = origin_node
 
-    this.positions[0] = this.origin_node.position.x
-    this.positions[1] = this.origin_node.position.y
+    this.positions[0] = this.origin_node.position[0]
+    this.positions[1] = this.origin_node.position[1]
     console.log(this.positions[0], this.positions[1])
     // this.line.geometry.attributes.position.needsUpdate = true
   }

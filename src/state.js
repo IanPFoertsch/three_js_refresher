@@ -27,7 +27,9 @@ class State {
   }
 
   destroy_open_link = function() {
-    this.open_link.dispose()
+    if ( this.is_open_link() ) {
+      this.open_link.dispose()
+    }
     this.open_link = null
   }
 

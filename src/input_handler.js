@@ -37,8 +37,7 @@ class InputHandler {
 
     if (clicked_object !== undefined) {
       var link = new NodeLink(this.scene)
-
-      link.set_origin(clicked_object)
+      link.set_origin(clicked_object.userData.parent_node)
       this.state.register_open_link(link)
     } else {
       // mousedown not on a clickable object
@@ -53,15 +52,27 @@ class InputHandler {
 
     if (this.state.is_open_link()) {
       if (clicked_object !== undefined) {
-        this.state.close_link_to_point(clicked_object.position.x, clicked_object.position.y)
+        //This line is an issue: b/c we're interacting with both game rules
+        // _and_ THREE.js graphical representation objects within the input handler
+        //Ideally the input handler would only be dealing with input,
+        // not input, game and Three.js objects all at once.
+        var node_to_link = clicked_object.userData.parent_node
+
+        if (this.state.get_open_link().is_valid_link(node_to_link)) {
+          //Only create a link to the destination object if it's valid to do so
+          //This is a violation of tell, don't ask, and lifts login into the input handler
+        // Ideally we'd push this down somehow, but I can't think of an easy way to do this at this time
+          this.state.close_link_to_point(clicked_object.position.x, clicked_object.position.y)
+        }
       } else {
         //if we're not intersecting a clickable/linkable object, let's destroy the link
-        this.state.destroy_open_link()
       }
     } else {
       // If there's no open link, end drag navigating
     }
 
+    //Perform all cleanup here, regardless of state. Make this operations idempotent
+    this.state.destroy_open_link()
     this.state.mouse_down = false
   }
 
