@@ -1,6 +1,8 @@
 import * as THREE from 'three'
 import { State } from './state'
 import { InputHandler } from './input_handler'
+import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
+
 
 class Game {
   constructor() {
@@ -20,8 +22,20 @@ class Game {
     this.renderer = new THREE.WebGLRenderer({
       canvas: document.querySelector('#bg')
     })
+
+    this.labelRenderer = new CSS2DRenderer();
+    this.labelRenderer.setSize(window.innerWidth, window.innerHeight);
+    this.labelRenderer.domElement.style.position = 'absolute';
+    this.labelRenderer.domElement.style.top = '0px';
+    document.body.appendChild(this.labelRenderer.domElement);
+
     this.renderer.setPixelRatio(window.devicePixelRatio)
     this.renderer.setSize(window.innerWidth, window.innerHeight)
+  }
+
+  render = function() {
+    this.renderer.render(this.scene, this.camera)
+    this.labelRenderer.render(this.scene, this.camera)
   }
 
   add_world_plane = function(plane) {

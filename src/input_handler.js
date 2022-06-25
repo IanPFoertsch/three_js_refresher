@@ -62,7 +62,7 @@ class InputHandler {
           //Only create a link to the destination object if it's valid to do so
           //This is a violation of tell, don't ask, and lifts login into the input handler
         // Ideally we'd push this down somehow, but I can't think of an easy way to do this at this time
-          this.state.close_link_to_point(clicked_object.position.x, clicked_object.position.y)
+          this.state.close_link_to_node(node_to_link)
         }
       } else {
         //if we're not intersecting a clickable/linkable object, let's destroy the link

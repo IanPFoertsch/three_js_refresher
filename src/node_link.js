@@ -1,5 +1,9 @@
 import * as THREE from 'three'
 const MAX_POINTS = 2
+import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
+
+
+
 class NodeLink {
   constructor(scene) {
     this.rendered = false
@@ -18,6 +22,29 @@ class NodeLink {
     // scene.add(this.line)
   }
 
+  get_link_value() {
+    //TODO: Make these values derived from the market
+    return 10
+  }
+
+
+  add_label() {
+    this.div = document.createElement("div")
+    this.div.className = 'label'
+    this.div.textContent = this.get_link_value()
+    this.div.style.marginTop = '-1em'
+    this.div.style.color = 'green'
+    this.label = new CSS2DObject(this.div)
+
+    //Place the label halfway between the source & destination positions.
+    this.label.position.set(
+      (this.positions[0] + this.positions[3]) / 2,
+      (this.positions[1] + this.positions[4]) / 2
+    );
+    this.mesh.add(this.label)
+    this.label.layers.set(0)
+  }
+
   is_valid_link(destination_node) {
     return this.origin_node.is_valid_link(destination_node)
   }
@@ -27,8 +54,13 @@ class NodeLink {
 
     this.positions[0] = this.origin_node.position[0]
     this.positions[1] = this.origin_node.position[1]
-    console.log(this.positions[0], this.positions[1])
+
     // this.line.geometry.attributes.position.needsUpdate = true
+  }
+
+  link_to_node(destination_node) {
+    this.draw_to_point(destination_node.position[0], destination_node.position[1])
+    this.add_label()
   }
 
   draw_to_point(x, y) {

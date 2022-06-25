@@ -20,8 +20,9 @@ class State {
     this.open_link = link
   }
 
-  close_link_to_point = function (x, y) {
-    this.open_link.draw_to_point(x, y)
+  close_link_to_node = function (destination_node) {
+
+    this.open_link.link_to_node(destination_node)
     this.links.push(this.open_link)
     this.open_link = null
   }

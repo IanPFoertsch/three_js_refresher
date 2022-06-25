@@ -22,7 +22,7 @@ class Node {
     FIVE: 5
   }
 
-  static COLOR_COMPATABILITY = {
+  static COLOR_COMPATIBILITY = {
     [Node.COLORS.RED]:  [
         Node.COLORS.RED,
         Node.COLORS.ORANGE,
