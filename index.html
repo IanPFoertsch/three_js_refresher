@@ -5,9 +5,28 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite App</title>
+    <style>
+      #info {
+				color: #0F0;
+				font-family: sans-serif;
+				padding: 10px;
+        border: 1px solid black;
+				background: rgba( 0, 0, 0, 0 );
+        position: absolute;
+        z-index:99;
+        display: flex;
+        margin: 1rem;
+			}
+    </style>
   </head>
   <body>
-    <canvas id="bg"></canvas>>
+    <body>
+      <div id="info">
+        <div in="label">&#128185 :</div>
+        <div id="currency"></div>
+      </div>
+    </body>
+
     <script type="module" src="/src/node.js"></script>
     <script type="module" src="/src/main.js"></script>
   </body>

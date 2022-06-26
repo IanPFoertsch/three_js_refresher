@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { Economy } from './economy'
 
 class State {
   constructor() {
@@ -6,6 +7,7 @@ class State {
     this.links = []
     this.world_plane = null
     this.open_link = null
+    this.economy = new Economy()
   }
 
   register_world_plane = function(plane) {

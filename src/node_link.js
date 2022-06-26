@@ -22,15 +22,29 @@ class NodeLink {
     // scene.add(this.line)
   }
 
-  get_link_value() {
+  get_quantity_supplied() {
     //TODO: Make these values derived from the market
     return 10
+  }
+
+  get_color_supplied() {
+    return this.origin_node.color
+  }
+
+  get_link_value() {
+    //We should find a better way of accessing global entities than
+    // storing it on the state. This causes a tight linkage between a node
+    // link and a completely different entity
+    return window.state.economy.get_price_for_quantity_of_color(
+      this.get_quantity_supplied(), this.origin_node.color
+    )
   }
 
 
   add_label() {
     this.div = document.createElement("div")
     this.div.className = 'label'
+    //the link value is an economy-aware entity.
     this.div.textContent = this.get_link_value()
     this.div.style.marginTop = '-1em'
     this.div.style.color = 'green'
@@ -73,6 +87,7 @@ class NodeLink {
     this.positions[3] = x
     this.positions[4] = y
     //TODO: can we simplify this access?
+
     this.mesh.geometry.attributes.position.needsUpdate = true
   }
 

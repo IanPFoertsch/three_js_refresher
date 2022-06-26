@@ -4,6 +4,8 @@ import * as THREE from 'three'
 
 
 class Node {
+
+
   static COLORS = {
     RED: 0xFF0000, //RED
     BLUE: 0x0000FF, // BLUE
@@ -91,6 +93,7 @@ class Ring {
 
     this.material = new THREE.MeshPhongMaterial({ color: 0x999999 });
     this.mesh = new THREE.Mesh(this.geometry, this.material);
+
     this.mesh.position.set(position[0], position[1], 0)
     scene.add(this.mesh)
    }
