@@ -11,19 +11,61 @@
 				font-family: sans-serif;
 				padding: 10px;
         border: 1px solid black;
-				background: rgba( 0, 0, 0, 0 );
+				/* background: rgba( 0, 0, 0, 0 ); */
         position: absolute;
         z-index:99;
-        display: flex;
-        margin: 1rem;
+        /* margin: 1rem; */
 			}
+      #currency_counter {
+        display: flex;
+        border: 1px solid black;
+      }
+      #market_wrapper {
+        /* color: #0F0; */
+				font-family: sans-serif;
+				/* padding: 10px; */
+        border: 1px solid black;
+				background: rgba( 0, 0, 0, 0 );
+        /* position: absolute; */
+        display: flex;
+        /* z-index:99; */
+        /* margin: 1rem; */
+      }
     </style>
   </head>
   <body>
     <body>
       <div id="info">
-        <div in="label">&#128185 :</div>
-        <div id="currency"></div>
+        <div id="currency_counter">
+          <div in="label">&#128185 :</div>
+          <div id="currency"></div>
+        </div>
+        <div id="market">
+          <div id="market_wrapper">
+            <div>&#128997:</div>
+            <div id="RED">100</div>
+          </div>
+          <div id="market_wrapper">
+            <div>&#129000:</div>
+            <div id="YELLOW">100</div>
+          </div>
+          <div id="market_wrapper">
+            <div>&#128998:</div>
+            <div id="BLUE">100</div>
+          </div>
+          <div id="market_wrapper">
+            <div>&#128999:</div>
+            <div id="ORANGE">100</div>
+          </div>
+          <div id="market_wrapper">
+            <div>&#129001:</div>
+            <div id="GREEN">100</div>
+          </div>
+          <div id="market_wrapper">
+            <div>&#129002:</div>
+            <div id="VIOLET">100</div>
+          </div>
+        </div>
       </div>
     </body>
 
