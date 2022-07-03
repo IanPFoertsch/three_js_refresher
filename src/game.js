@@ -34,9 +34,10 @@ class Game {
 
     this.currency_score = document.querySelector("#info #currency")
     this.currency_score.innerHTML = 100
-    window.setInterval(() => {
 
+    window.setInterval(() => {
       this.update_economy()
+      this.update_information_panel()
     }, 1000)
 
 
@@ -53,6 +54,19 @@ class Game {
   }
 
   update_economy = function() {
+    var current_supply = new GlobalSupply()
+
+    this.state.links.forEach(link => {
+      current_supply.increase_supply_for_color(
+        link.get_color_supplied(),
+        link.get_quantity_supplied()
+      )
+    })
+
+    this.state.economy.update_global_supply(current_supply)
+  }
+
+  update_information_panel() {
     var player_income = 0
     this.state.links.forEach(link => {
       player_income += link.get_link_value()
@@ -62,16 +76,10 @@ class Game {
     player_currency = player_currency + player_income
     this.currency_score.innerHTML = player_currency
 
-
-    var current_supply = new GlobalSupply()
-
-    this.state.links.forEach(link => {
-      current_supply.increase_supply_for_color(link.get_color_supplied(), link.get_quantity_supplied())
+    //for each node color, query the DOM & recover that dom element & update it's current price
+    Object.keys(Node.COLORS).forEach(color => {
+      document.querySelector(`#${color}`).innerHTML = this.state.economy.get_price_for_color(Node.COLORS[color])
     })
-
-    // console.log(colors_supplied)
-
-    this.state.economy.update_global_supply(current_supply)
   }
 
   render = function() {

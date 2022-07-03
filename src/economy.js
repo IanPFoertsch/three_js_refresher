@@ -22,6 +22,10 @@ class GlobalSupply {
 class DemandCurve {
   constructor(color) {
     this.color = color
+    //These intercepts are how our demand curve raises & lowers
+    // we need to derive the intercept from a function of how many unsupplied nodes there are
+    // on the board.
+
     this.intercept = 30
   }
 
