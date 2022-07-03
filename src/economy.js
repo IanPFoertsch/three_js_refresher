@@ -69,9 +69,7 @@ class Economy {
 
     Object.keys(Node.COLORS).forEach((color) => {
       var commodity = new Commodity(color)
-      //TODO: I need to figure out a better way to manage working with the color constants
-      // I constantly mismatch the colors & hex codes
-      this.commodities[Node.COLORS[color]] = commodity
+      this.commodities[color] = commodity
     })
   }
 

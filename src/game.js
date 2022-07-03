@@ -79,7 +79,7 @@ class Game {
 
     //for each node color, query the DOM & recover that dom element & update it's current price
     Object.keys(Node.COLORS).forEach(color => {
-      document.querySelector(`#${color}`).innerHTML = this.state.economy.get_price_for_color(Node.COLORS[color])
+      document.querySelector(`#${color}`).innerHTML = this.state.economy.get_price_for_color(color)
     })
   }
 

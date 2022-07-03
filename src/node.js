@@ -5,13 +5,23 @@ import * as THREE from 'three'
 
 class Node {
   static COLORS = {
-    RED: 0xFF0000, //RED
-    BLUE: 0x0000FF, // BLUE
-    YELLOW: 0xFFFF00, // YELLOW
+    RED: "RED",
+    BLUE: "BLUE",
+    YELLOW: "YELLOW",
 
-    VIOLET: 0xFF00FF, //violet/magenta
-    GREEN: 0x00FF00, //GREEN
-    ORANGE: 0xFFA500 // ORANGE
+    VIOLET: "VIOLET",
+    GREEN: "GREEN",
+    ORANGE: "ORANGE"
+  }
+
+  static COLOR_HEX_CODES = {
+    RED: 0xFF0000,
+    BLUE: 0x0000FF,
+    YELLOW: 0xFFFF00,
+
+    VIOLET: 0xFF00FF,
+    GREEN: 0x00FF00,
+    ORANGE: 0xFFA500
   }
   static TIERS = {
     // ideally we'd start at 1, but this is internal
@@ -79,10 +89,11 @@ class Node {
   }
 
   constructor(scene, position, color, tier) {
+
     this.position = position
     this.color = color
     this.tier = tier
-    this.ring = new Ring(this.position, { color: 0x999999 }, scene)
+    this.ring = new Ring(this.position, scene)
     this.icon = Node.map_tier_from_icon(tier, position, color, scene, this)
   }
 
@@ -117,7 +128,7 @@ class Node {
 }
 
 class Ring {
-  constructor(position, color, scene) {
+  constructor(position, scene) {
     this.geometry = new THREE.TorusGeometry(2, 0.2, 8, 8);
 
     this.material = new THREE.MeshPhongMaterial({ color: 0x999999 });
@@ -148,7 +159,7 @@ class NodeIcon {
     this.geometry = new THREE.ConeGeometry(4, 2, tier);
     this.geometry.rotateX(90 * (Math.PI / 180))
     this.geometry.rotateZ(NodeIcon.rotate_z_degrees(tier))
-    this.material = new THREE.MeshPhongMaterial({ color: color })
+    this.material = new THREE.MeshPhongMaterial({ color: Node.COLOR_HEX_CODES[color] })
     this.mesh = new THREE.Mesh(this.geometry, this.material)
     this.mesh.userData.parent_node = this.node
     this.mesh.position.set(this.position[0], this.position[1], 0)
