@@ -38,7 +38,6 @@ class Game {
     window.setInterval(() => {
       this.update_economy()
       this.update_information_panel()
-      this.state.get_current_demand()
     }, 3000)
 
 
@@ -54,17 +53,9 @@ class Game {
     this.renderer.setSize(window.innerWidth, window.innerHeight)
   }
 
+  //This update function should be pushed down into economy
   update_economy = function() {
-    var current_supply = new GlobalSupply()
-
-    this.state.links.forEach(link => {
-      current_supply.increase_supply_for_color(
-        link.get_color_supplied(),
-        link.get_quantity_supplied()
-      )
-    })
-
-    this.state.economy.update_global_supply(current_supply)
+    this.state.economy.update(this.state)
   }
 
   update_information_panel() {

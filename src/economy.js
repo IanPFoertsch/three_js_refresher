@@ -1,7 +1,6 @@
-import {Node } from "./node"
+import { Node } from "./node"
 
 class GlobalSupply {
-  //maybe this should just be derived from linkages?
   constructor() {
     this.color_supply = {}
     Object.values(Node.COLORS).forEach(color => {
@@ -18,44 +17,38 @@ class GlobalSupply {
   }
 }
 
-
-class DemandCurve {
-  constructor(color) {
-    this.color = color
-    //These intercepts are how our demand curve raises & lowers
-    // we need to derive the intercept from a function of how
-    // many nodes accepting our color there are on the board.
-    this.intercept = 30
-
-  }
-
-  nodes_accepting_color = function() {
-    var demand_by_color = {}
-    window.state.nodes.forEach(node => {
-      //get the node's color and increment the
-      console.log(node.demands_by_color)
+class GlobalDemand {
+  constructor() {
+    this.color_demand = {}
+    Object.values(Node.COLORS).forEach(color => {
+      this.color_demand[color] = 0
     })
   }
 
-  //This is the demand curve function
-  //This.intercept  = y-intercept of graph
-  price_at_quantity = function(quantity) {
-    return (-quantity) + this.intercept
+  increase_demand_for_color(color, amount_supplied) {
+    this.color_demand[color] += amount_supplied
+  }
+
+  get_demand_for_color(color) {
+    return this.color_demand[color]
   }
 }
 
 class Commodity {
   constructor(color) {
     this.color = color
-    this.demand_curve = new DemandCurve(color)
   }
 
-  //This is tricky -> We're not calculating the price for a given amount we're supplying,
-  //We're calculating the global price for a commodity at a current global supply level
-  // so the parameter is the _GLOBAL_ amount of commodity x being supplied accross the entire economy
-  //
+  //This is the global demand curve function
+  // y = -x + intercept
+  // ------------------------
+  // y = price
+  // x = _globally_ supplied quantity
+  // intercept => A determinant of the height of the demand curve
+  // -- Higher intercept = market demands more of this color,
+  // -- Lower intercept = market demands less of this color
   get_current_price_at_global_supply(global_supply) {
-    return this.demand_curve.price_at_quantity(global_supply)
+    return (-quantity) + window.state.economy.get_demand_for_color(this.color)
   }
 }
 
@@ -65,6 +58,7 @@ class Economy {
   constructor() {
     this.commodities = {}
     this.global_supply = new GlobalSupply()
+    this.global_demand = new GlobalDemand()
 
 
     Object.keys(Node.COLORS).forEach((color) => {
@@ -79,8 +73,31 @@ class Economy {
     )
   }
 
-  update_global_supply(global_supply) {
-    this.global_supply = global_supply
+  get_demand_for_color(color) {
+    return this.global_demand.get_demand_for_color(color)
+  }
+
+  //Update the economy's supply and demand from the current state of the board
+  update(state) {
+    //Update supply
+    var current_supply = new GlobalSupply()
+    state.links.forEach(link => {
+      current_supply.increase_supply_for_color(
+        link.get_color_supplied(),
+        link.get_quantity_supplied()
+      )
+    })
+    this.global_supply = current_supply
+
+    //Update demand
+    var current_demand = new GlobalDemand()
+    state.nodes.forEach(node => {
+      node.demands_by_color().forEach(color_demanded => {
+        current_demand.increase_demand_for_color(color_demanded, 10)
+      })
+    })
+
+    this.global_demand = current_demand
   }
 }
 

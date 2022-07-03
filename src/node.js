@@ -98,6 +98,7 @@ class Node {
   }
 
   demands_by_color() {
+
     if (this.tier === Node.TIERS.THREE) {
       //Three-tier nodes are producers only, accepting no inputs
       return []
