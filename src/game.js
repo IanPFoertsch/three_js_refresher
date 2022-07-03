@@ -38,7 +38,8 @@ class Game {
     window.setInterval(() => {
       this.update_economy()
       this.update_information_panel()
-    }, 1000)
+      this.state.get_current_demand()
+    }, 3000)
 
 
 

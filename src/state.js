@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import { Economy } from './economy'
+import { Node } from './node'
 
 class State {
   constructor() {
@@ -53,6 +54,24 @@ class State {
     return this.nodes.map(node => {
       return node.icon.mesh
     })
+  }
+
+  get_current_demand() {
+
+    var demand_by_color = {}
+    this.nodes.forEach(node => {
+      //get the node's color and increment the
+      console.log("iterating for node color", Node.COLORS[node.color], "inputs: ", node.demands_by_color())
+      node.demands_by_color().forEach(color_demanded => {
+        if (demand_by_color[color_demanded] === undefined) {
+          demand_by_color[color_demanded] = 0
+        }
+        demand_by_color[color_demanded] += 10
+      })
+
+
+    })
+    console.log(demand_by_color)
   }
 }
 

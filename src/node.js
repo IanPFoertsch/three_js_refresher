@@ -4,8 +4,6 @@ import * as THREE from 'three'
 
 
 class Node {
-
-
   static COLORS = {
     RED: 0xFF0000, //RED
     BLUE: 0x0000FF, // BLUE
@@ -24,7 +22,7 @@ class Node {
     FIVE: 5
   }
 
-  static COLOR_COMPATIBILITY = {
+  static COLOR_OUTPUT = {
     [Node.COLORS.RED]:  [
         Node.COLORS.RED,
         Node.COLORS.ORANGE,
@@ -44,6 +42,28 @@ class Node {
     [Node.COLORS.VIOLET]: [],
     [Node.COLORS.GREEN]: [],
     [Node.COLORS.ORANGE]: []
+  }
+
+  static COLOR_INPUT = {
+    [Node.COLORS.RED]: [Node.COLORS.RED],
+    [Node.COLORS.BLUE]: [Node.COLORS.BLUE],
+    [Node.COLORS.YELLOW]: [Node.COLORS.YELLOW],
+
+    [Node.COLORS.VIOLET]: [
+      Node.COLORS.RED,
+      Node.COLORS.BLUE,
+      Node.COLORS.VIOLET
+    ],
+    [Node.COLORS.GREEN]: [
+      Node.COLORS.YELLOW,
+      Node.COLORS.BLUE,
+      Node.COLORS.GREEN
+    ],
+    [Node.COLORS.ORANGE]: [
+      Node.COLORS.RED,
+      Node.COLORS.YELLOW,
+      Node.COLORS.ORANGE
+    ]
   }
 
   static map_tier_from_icon = function(tier, position, color, scene, parent_node) {
@@ -66,9 +86,18 @@ class Node {
     this.icon = Node.map_tier_from_icon(tier, position, color, scene, this)
   }
 
+  demands_by_color() {
+    if (this.tier === Node.TIERS.THREE) {
+      //Three-tier nodes are producers only, accepting no inputs
+      return []
+    }
+
+    return Node.COLOR_INPUT[this.color]
+  }
+
   is_valid_link(destination_node) {
     // is the destination_nodes' color in the origin node's compatability list?
-    var color_compatible = Node.COLOR_COMPATIBILITY[this.color].includes(destination_node.color)
+    var color_compatible = Node.COLOR_OUTPUT[this.color].includes(destination_node.color)
     return color_compatible
     // if (!color_compatible) {
     //   return false

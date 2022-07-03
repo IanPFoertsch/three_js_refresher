@@ -23,10 +23,18 @@ class DemandCurve {
   constructor(color) {
     this.color = color
     //These intercepts are how our demand curve raises & lowers
-    // we need to derive the intercept from a function of how many unsupplied nodes there are
-    // on the board.
-
+    // we need to derive the intercept from a function of how
+    // many nodes accepting our color there are on the board.
     this.intercept = 30
+
+  }
+
+  nodes_accepting_color = function() {
+    var demand_by_color = {}
+    window.state.nodes.forEach(node => {
+      //get the node's color and increment the
+      console.log(node.demands_by_color)
+    })
   }
 
   //This is the demand curve function
