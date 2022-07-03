@@ -35,9 +35,8 @@ class NodeLink {
     //We should find a better way of accessing global entities than
     // storing it on the state. This causes a tight linkage between a node
     // link and a completely different entity
-    return window.state.economy.get_price_for_quantity_of_color(
-      this.get_quantity_supplied(), this.origin_node.color
-    )
+    return window.state.economy.get_price_for_color(this.origin_node.color) *
+      this.get_quantity_supplied()
   }
 
 

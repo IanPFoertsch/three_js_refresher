@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { State } from './state'
 import { InputHandler } from './input_handler'
 import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
-import { Economy } from './economy';
+import { Economy, GlobalSupply } from './economy';
 import { Node } from './node'
 
 
@@ -62,17 +62,16 @@ class Game {
     player_currency = player_currency + player_income
     this.currency_score.innerHTML = player_currency
 
-    var colors_supplied = Object.values(Node.COLORS).reduce((supply_for_color, color) => {
 
-      supply_for_color[color] = 0
-      return supply_for_color
-    }, {})
+    var current_supply = new GlobalSupply()
 
     this.state.links.forEach(link => {
-      colors_supplied[link.get_color_supplied()] += link.get_quantity_supplied()
+      current_supply.increase_supply_for_color(link.get_color_supplied(), link.get_quantity_supplied())
     })
 
-    this.state.economy.set_prices(colors_supplied)
+    // console.log(colors_supplied)
+
+    this.state.economy.update_global_supply(current_supply)
   }
 
   render = function() {
