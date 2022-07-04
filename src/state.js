@@ -23,9 +23,8 @@ class State {
     this.open_link = link
   }
 
-  close_link_to_node = function (destination_node) {
-
-    this.open_link.link_to_node(destination_node)
+  close_link_to_node = function (destination_link_point) {
+    this.open_link.link_to_link_point(destination_link_point)
     this.links.push(this.open_link)
     this.open_link = null
   }
@@ -52,8 +51,8 @@ class State {
   get_clickable_objects() {
     //Make this memoized?
     return this.nodes.map(node => {
-      return node.icon.mesh
-    })
+      return node.get_link_points()
+    }).flat()
   }
 }
 

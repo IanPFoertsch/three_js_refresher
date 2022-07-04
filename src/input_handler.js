@@ -33,11 +33,14 @@ class InputHandler {
   mouse_down = function(event) {
     var world_coordinates = this.get_world_intersection(event)
 
-    var clicked_object = this.get_clicked_object(event)
-
-    if (clicked_object !== undefined) {
+    var clicked_point = this.get_clicked_object(event)
+    if (
+      clicked_point !== undefined &&
+      clicked_point.can_create_outgoing_link()
+      ) {
       var link = new NodeLink(this.scene)
-      link.set_origin(clicked_object.userData.parent_node)
+
+      link.set_origin(clicked_point)
       this.state.register_open_link(link)
     } else {
       // mousedown not on a clickable object
@@ -48,21 +51,16 @@ class InputHandler {
   }
 
   mouse_up = function(event) {
-    var clicked_object = this.get_clicked_object(event)
+    var clicked_point = this.get_clicked_object(event)
 
     if (this.state.is_open_link()) {
-      if (clicked_object !== undefined) {
-        //This line is an issue: b/c we're interacting with both game rules
-        // _and_ THREE.js graphical representation objects within the input handler
-        //Ideally the input handler would only be dealing with input,
-        // not input, game and Three.js objects all at once.
-        var node_to_link = clicked_object.userData.parent_node
+      if (clicked_point !== undefined) {
 
-        if (this.state.get_open_link().is_valid_link(node_to_link)) {
+        if (this.state.get_open_link().is_valid_link(clicked_point)) {
           //Only create a link to the destination object if it's valid to do so
           //This is a violation of tell, don't ask, and lifts login into the input handler
         // Ideally we'd push this down somehow, but I can't think of an easy way to do this at this time
-          this.state.close_link_to_node(node_to_link)
+          this.state.close_link_to_node(clicked_point)
         }
       } else {
         //if we're not intersecting a clickable/linkable object, let's destroy the link
@@ -89,8 +87,8 @@ class InputHandler {
 
   get_clicked_object = function(mouse_event) {
     var intersects = this.get_intersecting_objects(mouse_event, this.state.get_clickable_objects())
-
-    return intersects.length === 0 ? undefined : intersects[0].object
+    //Note this returns our game object, not the mesh
+    return intersects.length === 0 ? undefined : intersects[0].object.userData.parent
   }
 
   get_intersecting_objects(mouse_event, objects_to_check) {

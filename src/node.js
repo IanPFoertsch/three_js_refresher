@@ -1,7 +1,6 @@
 import * as THREE from 'three'
 
-
-
+import {LinkPoint} from "./link_point"
 
 class Node {
   static COLORS = {
@@ -76,29 +75,53 @@ class Node {
     ]
   }
 
-  static map_tier_from_icon = function(tier, position, color, scene, parent_node) {
+  static map_tier_from_icon = function(tier, position, color, scene, parent) {
 
     switch(tier) {
       case Node.TIERS.THREE:
-        return new NodeIcon(position, color, scene, tier, parent_node)
+        return new NodeIcon(position, color, scene, tier, parent)
       case Node.TIERS.FOUR:
-        return new NodeIcon(position, color, scene, tier, parent_node)
+        return new NodeIcon(position, color, scene, tier, parent)
       case Node.TIERS.FIVE:
-        return new NodeIcon(position, color, scene, tier, parent_node)
+        return new NodeIcon(position, color, scene, tier, parent)
     }
   }
 
   constructor(scene, position, color, tier) {
-
     this.position = position
     this.color = color
     this.tier = tier
-    this.ring = new Ring(this.position, scene)
+
+    this.link_points = this.create_link_points(scene)
     this.icon = Node.map_tier_from_icon(tier, position, color, scene, this)
   }
 
-  demands_by_color() {
+  get_link_points() {
+    return this.link_points.map(link_point => {
+      return link_point.mesh
+    })
+  }
 
+  create_link_points(scene) {
+    var number_of_connections = 1
+    switch(this.tier) {
+      case Node.TIERS.THREE:
+        number_of_connections = 3
+        break;
+      case Node.TIERS.FOUR:
+        number_of_connections = 2
+        break;
+      default:
+        number_of_connections = 1
+        break;
+    }
+
+    return [...Array(number_of_connections).keys()].map((connection_number) => {
+      return new LinkPoint(this.position, scene, connection_number, this)
+    });
+  }
+
+  demands_by_color() {
     if (this.tier === Node.TIERS.THREE) {
       //Three-tier nodes are producers only, accepting no inputs
       return []
@@ -107,18 +130,14 @@ class Node {
     return Node.COLOR_INPUT[this.color]
   }
 
-  is_valid_link(destination_node) {
-    // is the destination_nodes' color in the origin node's compatability list?
-    var color_compatible = Node.COLOR_OUTPUT[this.color].includes(destination_node.color)
+  is_linkable_to_origin(origin_link_point) {
+    //We are the destination node
+    var color_compatible = Node.COLOR_INPUT[this.color].includes(origin_link_point.parent_node.color)
     return color_compatible
     // if (!color_compatible) {
     //   return false
     // }
 
-    // FUTURE LINKAGE RULES TO IMPLEMENT
-    // ------------------------------------
-    // NO REPEAT LINKAGES BETWEEN NODES
-    // we can't link two of the same nodes more than once (unless we support node input/output ports)
     // ------------------
     // LINKAGES BY TIER
     // Nodes can only link to the same tier and the one above.
@@ -126,18 +145,6 @@ class Node {
     // 4-tier nodes can only link to 4-tier and 5-tier nodes, etc
 
   }
-}
-
-class Ring {
-  constructor(position, scene) {
-    this.geometry = new THREE.TorusGeometry(2, 0.2, 8, 8);
-
-    this.material = new THREE.MeshPhongMaterial({ color: 0x999999 });
-    this.mesh = new THREE.Mesh(this.geometry, this.material);
-
-    this.mesh.position.set(position[0], position[1], 0)
-    scene.add(this.mesh)
-   }
 }
 
 class NodeIcon {
@@ -162,7 +169,6 @@ class NodeIcon {
     this.geometry.rotateZ(NodeIcon.rotate_z_degrees(tier))
     this.material = new THREE.MeshPhongMaterial({ color: Node.COLOR_HEX_CODES[color] })
     this.mesh = new THREE.Mesh(this.geometry, this.material)
-    this.mesh.userData.parent_node = this.node
     this.mesh.position.set(this.position[0], this.position[1], 0)
 
     scene.add(this.mesh)

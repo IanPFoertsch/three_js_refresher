@@ -48,7 +48,7 @@ class Commodity {
   // -- Higher intercept = market demands more of this color,
   // -- Lower intercept = market demands less of this color
   get_current_price_at_global_supply(global_supply) {
-    return (-quantity) + window.state.economy.get_demand_for_color(this.color)
+    return (-global_supply) + window.state.economy.get_demand_for_color(this.color)
   }
 }
 
@@ -96,7 +96,6 @@ class Economy {
         current_demand.increase_demand_for_color(color_demanded, 10)
       })
     })
-
     this.global_demand = current_demand
   }
 }
