@@ -34,47 +34,29 @@ class GlobalDemand {
   }
 }
 
-class Commodity {
-  constructor(color) {
-    this.color = color
-  }
-
-  //This is the global demand curve function
-  // y = -x + intercept
-  // ------------------------
-  // y = price
-  // x = _globally_ supplied quantity
-  // intercept => A determinant of the height of the demand curve
-  // -- Higher intercept = market demands more of this color,
-  // -- Lower intercept = market demands less of this color
-  get_current_price_at_global_supply(global_supply) {
-    return (-global_supply) + window.state.economy.get_demand_for_color(this.color)
-  }
-}
-
 class Economy {
   //The economy is the public interface here, everything except the global supply update
   //should be private
+  static NODE_CREATION_THRESHOLD = 10
+  static NODE_DESTRUCTION_THRESHOLD = 30
+
   constructor() {
-    this.commodities = {}
     this.global_supply = new GlobalSupply()
     this.global_demand = new GlobalDemand()
-
-
-    Object.keys(Node.COLORS).forEach((color) => {
-      var commodity = new Commodity(color)
-      this.commodities[color] = commodity
-    })
   }
 
+  //This is the global demand curve function
   get_price_for_color(color) {
-    return this.commodities[color].get_current_price_at_global_supply(
-      this.global_supply.get_supply_for_color(color)
-    )
-  }
-
-  get_demand_for_color(color) {
-    return this.global_demand.get_demand_for_color(color)
+    // y = -x + intercept
+    // ------------------------
+    // y = price
+    // x = _globally_ supplied quantity
+    // intercept => A determinant of the height of the demand curve
+    // -- Higher intercept = market demands more of this color,
+    // -- Lower intercept = market demands less of this color
+    var supply = this.global_supply.get_supply_for_color(color)
+    var demand = this.global_demand.get_demand_for_color(color)
+    return ( - supply ) + demand
   }
 
   //Update the economy's supply and demand from the current state of the board
@@ -102,8 +84,8 @@ class Economy {
   //based on the current prices, if prices are low, create new nodes demanding that color
   // if prices are high, destroy unsupplied nodes demanding that color
   node_creation() {
-    console.log("in here!")
     Object.keys(Node.COLORS).forEach((color) => {
+
       var price = this.get_price_for_color(color)
       if (price < Economy.NODE_CREATION_THRESHOLD) {
         //create a new node

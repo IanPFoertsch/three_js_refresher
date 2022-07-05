@@ -9,9 +9,10 @@ import { Node } from './node'
 class Game {
   constructor() {
     this.scene = new THREE.Scene()
+    window.scene = this.scene
     this.state = new State()
-
     window.state = this.state
+
 
 
     this.camera = new THREE.PerspectiveCamera(

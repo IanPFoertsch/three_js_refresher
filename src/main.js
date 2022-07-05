@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import { PointLight, PointLightHelper } from 'three'
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { Node } from "./node"
-import { NodeLink } from "./node_link"
+import { Link } from "./link"
 import { InputHandler } from './input_handler'
 import { State } from './state'
 import { Game } from './game'

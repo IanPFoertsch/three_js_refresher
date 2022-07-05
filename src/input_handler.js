@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { NodeLink } from "./node_link"
+import { Link } from "./link"
 
 class InputHandler {
   constructor(game) {
@@ -38,7 +38,7 @@ class InputHandler {
       clicked_point !== undefined &&
       clicked_point.can_create_outgoing_link()
       ) {
-      var link = new NodeLink(this.scene)
+      var link = new Link()
 
       link.set_origin(clicked_point)
       this.state.register_open_link(link)
