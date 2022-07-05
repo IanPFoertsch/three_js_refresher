@@ -102,6 +102,7 @@ class Economy {
   //based on the current prices, if prices are low, create new nodes demanding that color
   // if prices are high, destroy unsupplied nodes demanding that color
   node_creation() {
+    console.log("in here!")
     Object.keys(Node.COLORS).forEach((color) => {
       var price = this.get_price_for_color(color)
       if (price < Economy.NODE_CREATION_THRESHOLD) {

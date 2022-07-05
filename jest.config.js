@@ -10,4 +10,5 @@ module.exports = {
   //   '^.+\\.ts$': 'ts-jest',
   //   '^.+\\.vue$': 'vue-jest'
   // }
+  testEnvironment: "jsdom"
 }
