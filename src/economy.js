@@ -98,6 +98,21 @@ class Economy {
     })
     this.global_demand = current_demand
   }
+
+  //based on the current prices, if prices are low, create new nodes demanding that color
+  // if prices are high, destroy unsupplied nodes demanding that color
+  node_creation() {
+    Object.keys(Node.COLORS).forEach((color) => {
+      var price = this.get_price_for_color(color)
+      if (price < Economy.NODE_CREATION_THRESHOLD) {
+        //create a new node
+      }
+
+      if (price > Economy.NODE_DESTRUCTION_THRESHOLD) {
+        //destroy unsupplied nodes
+      }
+    })
+  }
 }
 
 export { Economy, GlobalSupply }
