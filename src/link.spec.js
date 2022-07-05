@@ -1,7 +1,7 @@
-import { Economy } from './economy'
+import { Link } from './link'
 // import HelloWorld from './HelloWorld.vue'
 
-describe('Economy', () => {
+describe('Link', () => {
 
   beforeEach(() => {
 
@@ -18,7 +18,8 @@ describe('Economy', () => {
     //     origin: "https://example.com"
     //   }
     // }));
-    var economy = new Economy()
+    var link = new Link()
     console.log(economy.node_creation())
+    expect(1).toEqual(1)
   })
 })

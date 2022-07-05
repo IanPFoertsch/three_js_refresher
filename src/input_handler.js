@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { Link } from "./link"
+import { Link } from "./game/link"
 
 class InputHandler {
   constructor(game) {

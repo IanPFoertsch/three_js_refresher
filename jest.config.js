@@ -1,14 +1,16 @@
 // jest.config.js
 module.exports = {
+
   moduleFileExtensions: [
     'js',
     // 'ts',
     'json',
-    // 'vue'
   ],
-  // transform: {
-  //   '^.+\\.ts$': 'ts-jest',
-  //   '^.+\\.vue$': 'vue-jest'
-  // }
-  testEnvironment: "jsdom"
+  testEnvironment: "jsdom",
+  // transform: {},
+  transformIgnorePatterns: [
+    // Required due to errors: "SyntaxError: Cannot use import statement outside a module"
+    // source: https://stackoverflow.com/a/68193471
+    "node_modules/(?!three/.*)"
+  ]
 }

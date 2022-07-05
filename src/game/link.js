@@ -1,16 +1,11 @@
-import * as THREE from 'three'
-const MAX_POINTS = 2
-import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
-import { UILink } from './ui_objects/ui_link'
+import { UILink } from '../ui_objects/ui_link'
 
 class Link {
   constructor() {
     this.rendered = false
     this.ui_representation = new UILink()
-
     this.origin_link_point = null
     this.destination_link_point = null
-    // scene.add(this.line)
   }
 
   get_quantity_supplied() {
@@ -26,6 +21,7 @@ class Link {
     //We should find a better way of accessing global entities than
     // storing it on the state. This causes a tight linkage between a node
     // link and a completely different entity
+    console.log(window.state)
     return window.state.economy.get_price_for_color(this.origin_link_point.get_node_color()) *
       this.get_quantity_supplied()
   }
