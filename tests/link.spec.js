@@ -39,7 +39,7 @@ describe('Link', () => {
   });
 
 
-  it.only('should implement node creation', () => {
+  it('should implement node creation', () => {
     expect(link.get_link_value()).toEqual(100)
   })
 })

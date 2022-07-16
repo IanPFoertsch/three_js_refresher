@@ -21,7 +21,6 @@ class Link {
     //We should find a better way of accessing global entities than
     // storing it on the state. This causes a tight linkage between a node
     // link and a completely different entity
-    console.log(window.state)
     return window.state.economy.get_price_for_color(this.origin_link_point.get_node_color()) *
       this.get_quantity_supplied()
   }
