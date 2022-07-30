@@ -56,6 +56,7 @@ class Economy {
     // -- Lower intercept = market demands less of this color
     var supply = this.global_supply.get_supply_for_color(color)
     var demand = this.global_demand.get_demand_for_color(color)
+
     return ( - supply ) + demand
   }
 
@@ -63,6 +64,7 @@ class Economy {
   update(state) {
     //Update supply
     var current_supply = new GlobalSupply()
+
     state.links.forEach(link => {
       current_supply.increase_supply_for_color(
         link.get_color_supplied(),
@@ -78,12 +80,13 @@ class Economy {
         current_demand.increase_demand_for_color(color_demanded, 10)
       })
     })
+    // console.log("logging demand!", current_demand)
     this.global_demand = current_demand
   }
 
   //based on the current prices, if prices are low, create new nodes demanding that color
   // if prices are high, destroy unsupplied nodes demanding that color
-  node_creation() {
+  get_node_creation() {
     var colors_to_create = []
     Object.keys(Node.COLORS).forEach((color) => {
       var price = this.get_price_for_color(color)
@@ -97,7 +100,7 @@ class Economy {
     return colors_to_create
   }
 
-  node_deletion() {
+  get_node_deletion() {
     var colors_to_delete = []
     Object.keys(Node.COLORS).forEach((color) => {
       var price = this.get_price_for_color(color)

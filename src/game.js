@@ -12,6 +12,7 @@ class Game {
     window.scene = this.scene
     this.state = new State()
     window.state = this.state
+    window.game = this
 
     this.camera = new THREE.PerspectiveCamera(
       75, // field of view -> in degrees? instead of Rads
@@ -62,9 +63,26 @@ class Game {
 
   }
 
-  //This update function should be pushed down into economy
   update_economy = function() {
     this.state.economy.update(this.state)
+    var nodes_to_create = this.state.economy.get_node_creation()
+    nodes_to_create.forEach((node_color) => {
+      var colors_demanding = Node.COLOR_OUTPUT[node_color]
+      console.log(colors_demanding)
+      var random_color = colors_demanding[Math.floor(Math.random() * colors_demanding.length)]
+      console.log(random_color)
+      //create a new node at a random location... what teir exactly? just make it tier 4
+      this.add_node(
+        new Node(
+          this.scene,
+          [(Math.random() * 20 - 10), (Math.random() * 20 - 10)],
+          random_color,
+          Node.TIERS.FOUR
+        )
+      )
+
+      //why aren't prices increasing?
+    })
   }
 
   update_information_panel() {
@@ -96,6 +114,7 @@ class Game {
   add_node = function(node) {
     // this.scene.add(node)
     this.state.register_node(node)
+    //nodes are being added to the state.
   }
 
   add_light = function(light) {

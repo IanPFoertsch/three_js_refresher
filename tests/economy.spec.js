@@ -1,41 +1,21 @@
 import { Economy } from '../src/economy'
 // import HelloWorld from './HelloWorld.vue'
 
+const generate_mock_nodes = function(demanded_colors) {
+  return demanded_colors.map((color_in_demand) => {
+    return {
+      demands_by_color: function () {
+        return [color_in_demand]
+      }
+    }
+  })
+}
+
 const generate_default_state = function() {
+  var nodes_demanding_colors = ["RED", "YELLOW", "BLUE", "ORANGE", "GREEN", "VIOLET"]
   return {
     links: [],
-    nodes: [
-      {
-        demands_by_color: function () {
-          return ["RED"]
-        }
-      },
-      {
-        demands_by_color: function () {
-          return ["YELLOW"]
-        }
-      },
-      {
-        demands_by_color: function () {
-          return ["BLUE"]
-        }
-      },
-      {
-        demands_by_color: function () {
-          return ["ORANGE"]
-        }
-      },
-      {
-        demands_by_color: function () {
-          return ["GREEN"]
-        }
-      },
-      {
-        demands_by_color: function () {
-          return ["VIOLET"]
-        }
-      }
-    ]
+    nodes: generate_mock_nodes(nodes_demanding_colors)
   }
 }
 
@@ -53,13 +33,13 @@ describe('Economy', () => {
     global.console = jestConsole;
   });
 
-  describe("node_creation", () => {
+  describe("get_node_creation", () => {
     describe("with no colors supplied", () => {
       it('generates no new nodes', () => {
         state = generate_default_state()
         economy = new Economy()
         economy.update(state)
-        expect(economy.node_creation()).toEqual([])
+        expect(economy.get_node_creation()).toEqual([])
       })
     })
 
@@ -75,7 +55,7 @@ describe('Economy', () => {
 
         economy = new Economy()
         economy.update(state)
-        expect(economy.node_creation()).toEqual(["RED"])
+        expect(economy.get_node_creation()).toEqual(["RED"])
       })
     })
 
@@ -95,7 +75,7 @@ describe('Economy', () => {
 
         economy = new Economy()
         economy.update(state)
-        expect(economy.node_creation().sort()).toEqual(["YELLOW", "RED"].sort())
+        expect(economy.get_node_creation().sort()).toEqual(["YELLOW", "RED"].sort())
       })
     })
 
@@ -115,7 +95,7 @@ describe('Economy', () => {
 
         economy = new Economy()
         economy.update(state)
-        expect(economy.node_creation().sort()).toEqual(["YELLOW", "RED"].sort())
+        expect(economy.get_node_creation().sort()).toEqual(["YELLOW", "RED"].sort())
       })
     })
 
@@ -131,7 +111,43 @@ describe('Economy', () => {
 
         economy = new Economy()
         economy.update(state)
-        expect(economy.node_creation().sort()).toEqual(["RED"].sort())
+        expect(economy.get_node_creation().sort()).toEqual(["RED"].sort())
+      })
+    })
+  })
+
+  describe("get_node_deletion", () => {
+    describe("all colors non-supplied", () => {
+      it('triggers deletion of no new nodes', () => {
+        state = generate_default_state()
+        economy = new Economy()
+        economy.update(state)
+        expect(economy.get_node_deletion()).toEqual([])
+      })
+    })
+
+    describe("with a single color in high demand", () => {
+      it('indicates deletion of the color in high demand', () => {
+        state = generate_default_state()
+
+        state.nodes = state.nodes.concat(generate_mock_nodes(["RED", "RED", "RED"]))
+
+        economy = new Economy()
+        economy.update(state)
+        expect(economy.get_node_deletion()).toEqual(["RED"])
+      })
+    })
+
+    describe("multiple colors in high demand", () => {
+      it('indicates deletion of each color in high demand', () => {
+        state = generate_default_state()
+
+        state.nodes = state.nodes.concat(generate_mock_nodes(["RED", "RED", "RED"]))
+        state.nodes = state.nodes.concat(generate_mock_nodes(["BLUE", "BLUE", "BLUE"]))
+
+        economy = new Economy()
+        economy.update(state)
+        expect(economy.get_node_deletion()).toEqual(["RED", "BLUE"])
       })
     })
   })
