@@ -68,9 +68,9 @@ class Game {
     var nodes_to_create = this.state.economy.get_node_creation()
     nodes_to_create.forEach((node_color) => {
       var colors_demanding = Node.COLOR_OUTPUT[node_color]
-      console.log(colors_demanding)
+
       var random_color = colors_demanding[Math.floor(Math.random() * colors_demanding.length)]
-      console.log(random_color)
+
       //create a new node at a random location... what teir exactly? just make it tier 4
       this.add_node(
         new Node(
