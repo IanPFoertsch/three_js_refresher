@@ -13,19 +13,36 @@ class InputHandler {
     window.addEventListener('mousemove', event => { this.mouse_move(event) })
     window.addEventListener("mousedown", event => { this.mouse_down(event) })
     window.addEventListener("mouseup", event => { this.mouse_up(event) })
+    window.addEventListener("wheel", event => { this.mouse_wheel(event) })
   }
 
+  mouse_wheel = function(event) {
+    //Camera Zoom
+    var zoom = Math.sign(event.deltaY) * 5
+
+    //TODO: as we get closer to the world-plane,
+    // we need to scale our differential using the logistic function
+    // IE: if we're zooming very close into the world plane, zoom in smaller increments
+    // if we're very far away from the world plane, zoom in larger increments
+    // TODO: Put the zoom events & camera events in general on a stack
+    // update the camera position gradually based on sum of the stack to make this smooth
+    this.camera.position.z += zoom
+  }
 
   mouse_move = function(event) {
     if (this.state.mouse_down == true) {
       // if we've created a node_link
+      var world_coordinates = this.get_world_intersection(event)
       if (this.state.is_open_link()) {
-        var world_coordinates = this.get_world_intersection(event)
-
         this.state.get_open_link().draw_to_point(world_coordinates.x, world_coordinates.y)
       } else {
         // mouse down & no open link = drag navigating
-        // implement drag navigating here
+        //TODO: Implement limits to drag navigation
+        var x_differential = this.drag_navigation_origin_point.x -  world_coordinates.x
+        var y_differential = this.drag_navigation_origin_point.y - world_coordinates.y
+
+        this.camera.position.x += x_differential
+        this.camera.position.y += y_differential
       }
     }
   }
@@ -43,8 +60,8 @@ class InputHandler {
       link.set_origin(clicked_point)
       this.state.register_open_link(link)
     } else {
-      // mousedown not on a clickable object
-      // start drag navigating
+      // mousedown not on a clickable object - start drag navigating
+      this.drag_navigation_origin_point = world_coordinates
     }
 
     this.state.mouse_down = true
@@ -66,10 +83,11 @@ class InputHandler {
         //if we're not intersecting a clickable/linkable object, let's destroy the link
       }
     } else {
-      // If there's no open link, end drag navigating
+      // If there's no open link, end drag navigating -> consolidated to cleanup step
     }
 
     //Perform all cleanup here, regardless of state. Make this operations idempotent
+    this.drag_navigation_origin_point = null
     this.state.destroy_open_link()
     this.state.mouse_down = false
   }

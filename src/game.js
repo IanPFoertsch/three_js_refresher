@@ -13,8 +13,6 @@ class Game {
     this.state = new State()
     window.state = this.state
 
-
-
     this.camera = new THREE.PerspectiveCamera(
       75, // field of view -> in degrees? instead of Rads
       window.innerWidth / window.innerHeight, //Aspect Ratio
@@ -25,9 +23,7 @@ class Game {
 
     this.input_handler = new InputHandler(this)
 
-    this.renderer = new THREE.WebGLRenderer({
-      // canvas: document.querySelector('#bg')
-    })
+    this.renderer = new THREE.WebGLRenderer({})
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(window.innerWidth, window.innerHeight)
     document.body.appendChild(this.renderer.domElement)
@@ -52,6 +48,18 @@ class Game {
 
     this.renderer.setPixelRatio(window.devicePixelRatio)
     this.renderer.setSize(window.innerWidth, window.innerHeight)
+
+    //TODO: This belongs in some kind of view manager class
+    window.addEventListener('resize', this.on_window_resize.bind(this), false);
+  }
+
+  on_window_resize = function () {
+    this.camera.aspect = window.innerWidth / window.innerHeight;
+    this.camera.updateProjectionMatrix();
+
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.labelRenderer.setSize(window.innerWidth, window.innerHeight);
+
   }
 
   //This update function should be pushed down into economy

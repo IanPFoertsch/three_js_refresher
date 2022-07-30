@@ -86,9 +86,7 @@ class Economy {
   node_creation() {
 
     Object.keys(Node.COLORS).forEach((color) => {
-
       var price = this.get_price_for_color(color)
-      console.log("Iterating for color", color, price)
       if (price < Economy.NODE_CREATION_THRESHOLD) {
 
       }
