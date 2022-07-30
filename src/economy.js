@@ -84,17 +84,30 @@ class Economy {
   //based on the current prices, if prices are low, create new nodes demanding that color
   // if prices are high, destroy unsupplied nodes demanding that color
   node_creation() {
-
+    var colors_to_create = []
     Object.keys(Node.COLORS).forEach((color) => {
       var price = this.get_price_for_color(color)
+
       if (price < Economy.NODE_CREATION_THRESHOLD) {
-
-      }
-
-      if (price > Economy.NODE_DESTRUCTION_THRESHOLD) {
-        //destroy unsupplied nodes
+        colors_to_create.push(color)
       }
     })
+
+    //Notify a pubsub queue of demand for new nodes?
+    return colors_to_create
+  }
+
+  node_deletion() {
+    var colors_to_delete = []
+    Object.keys(Node.COLORS).forEach((color) => {
+      var price = this.get_price_for_color(color)
+      if (price > Economy.NODE_DESTRUCTION_THRESHOLD) {
+        colors_to_delete.push(color)
+      }
+    })
+
+    //Notify a pubsub queue of orders to destroy nodes?
+    return colors_to_delete
   }
 }
 
