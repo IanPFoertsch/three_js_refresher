@@ -36,7 +36,7 @@ class Game {
     window.setInterval(() => {
       this.update_economy()
       this.update_information_panel()
-    }, 3000)
+    }, 1000)
 
 
 
@@ -72,6 +72,7 @@ class Game {
       var random_color = colors_demanding[Math.floor(Math.random() * colors_demanding.length)]
 
       //create a new node at a random location... what teir exactly? just make it tier 4
+      //TODO: Nodes will be placed randomly but should move via a force directed graph algorithm
       this.add_node(
         new Node(
           this.scene,
@@ -80,9 +81,38 @@ class Game {
           Node.TIERS.FOUR
         )
       )
-
-      //why aren't prices increasing?
     })
+
+    var overpriced_colors = this.state.economy.get_node_deletion()
+
+    console.log("overpriced colors: ", overpriced_colors)
+    //get all unsupplied nodes demanding that color
+    var colors_to_destroy = [...new Set(
+      overpriced_colors.map((node_color) => {
+
+          return Node.COLOR_OUTPUT[node_color]
+        }).flat()
+      )
+    ]
+
+    console.log("colors_to_destroy", colors_to_destroy)
+    //select nodes with a color within the colors to destroy
+
+    var nodes_to_destroy = this.state.get_nodes().filter((node) => {
+
+      return colors_to_destroy.includes(node.color) && node.tier !== Node.TIERS.THREE
+    })
+
+    //randomly select a node to destroy
+    var node_to_destroy = nodes_to_destroy[Math.floor(Math.random() * nodes_to_destroy.length)]
+
+    //We're not modifying the nodes registered in the state object.
+    //How do we tell the state which node to destroy
+    if (node_to_destroy !== undefined) {
+      this.state.deregister_node(node_to_destroy)
+      node_to_destroy.dispose()
+    }
+
   }
 
   update_information_panel() {

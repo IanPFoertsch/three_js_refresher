@@ -19,6 +19,15 @@ class State {
     this.nodes.push(node)
   }
 
+  deregister_node = function(node_to_deregister) {
+    // console.log("deregistering node!", this.nodes.length)
+    // console.log(node_to_deregister)
+    this.nodes = this.nodes.filter((node) => {
+      // console.log("comparing node", node.color, node.position, " with", node_to_deregister.color, node_to_deregister.position)
+      return node !== node_to_deregister
+    })
+  }
+
   register_open_link = function(link) {
     this.open_link = link
   }
@@ -46,6 +55,10 @@ class State {
 
   get_world_plane = function() {
     return this.world_plane
+  }
+
+  get_nodes = function() {
+    return this.nodes
   }
 
   get_clickable_objects() {

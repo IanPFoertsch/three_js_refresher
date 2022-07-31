@@ -47,6 +47,7 @@ class Economy {
 
   //This is the global demand curve function
   get_price_for_color(color) {
+
     // y = -x + intercept
     // ------------------------
     // y = price
@@ -56,7 +57,7 @@ class Economy {
     // -- Lower intercept = market demands less of this color
     var supply = this.global_supply.get_supply_for_color(color)
     var demand = this.global_demand.get_demand_for_color(color)
-
+    // console.log("color", color, " supply: ", supply, " demand: ", demand)
     return ( - supply ) + demand
   }
 
@@ -102,8 +103,10 @@ class Economy {
 
   get_node_deletion() {
     var colors_to_delete = []
+
     Object.keys(Node.COLORS).forEach((color) => {
       var price = this.get_price_for_color(color)
+
       if (price > Economy.NODE_DESTRUCTION_THRESHOLD) {
         colors_to_delete.push(color)
       }

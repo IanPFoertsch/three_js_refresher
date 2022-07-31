@@ -31,6 +31,7 @@ class Node {
     FIVE: 5
   }
 
+  //[output color] => [list of colors that accept this as an input]
   static COLOR_OUTPUT = {
     [Node.COLORS.RED]:  [
         Node.COLORS.RED,
@@ -48,11 +49,12 @@ class Node {
       Node.COLORS.ORANGE,
     ],
 
-    [Node.COLORS.VIOLET]: [],
-    [Node.COLORS.GREEN]: [],
-    [Node.COLORS.ORANGE]: []
+    [Node.COLORS.VIOLET]: [Node.COLORS.VIOLET],
+    [Node.COLORS.GREEN]: [Node.COLORS.GREEN],
+    [Node.COLORS.ORANGE]: [Node.COLORS.ORANGE]
   }
 
+  //[input_color] => [ list of colors that this color accepts inputs from]
   static COLOR_INPUT = {
     [Node.COLORS.RED]: [Node.COLORS.RED],
     [Node.COLORS.BLUE]: [Node.COLORS.BLUE],
@@ -102,6 +104,12 @@ class Node {
     })
   }
 
+  has_existing_link() {
+    return this.link_points.some(link_point => {
+      return link_point.has_existing_link()
+    })
+  }
+
   create_link_points(scene) {
     var number_of_connections = 1
     switch(this.tier) {
@@ -130,6 +138,10 @@ class Node {
     return Node.COLOR_INPUT[this.color]
   }
 
+  accepts_input_color(input_color) {
+    this.demands_by_color().includes(input_color)
+  }
+
   is_linkable_to_origin(origin_link_point) {
     //We are the destination node
     var color_compatible = Node.COLOR_INPUT[this.color].includes(origin_link_point.parent_node.color)
@@ -144,6 +156,19 @@ class Node {
     // 3-tier nodes can only link to 3-tier and 4-tier nodes
     // 4-tier nodes can only link to 4-tier and 5-tier nodes, etc
 
+  }
+
+  dispose() {
+    //Dispose of linkpoints & propagate destroy down through them
+    // dispose of the nodeIcon
+    this.link_points.forEach((link_point) => {
+      link_point.dispose()
+    })
+    this.icon.dispose()
+    //The node class itself has no THREE.js components
+    // this.geometry.dispose()
+    // this.material.dispose()
+    // window.scene.remove(this.mesh)
   }
 }
 
@@ -172,6 +197,12 @@ class NodeIcon {
     this.mesh.position.set(this.position[0], this.position[1], 0)
 
     scene.add(this.mesh)
+  }
+
+  dispose() {
+    this.geometry.dispose()
+    this.material.dispose()
+    window.scene.remove(this.mesh)
   }
 }
 

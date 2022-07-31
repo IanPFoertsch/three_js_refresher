@@ -35,6 +35,10 @@ class LinkPoint {
     ]
   }
 
+  has_existing_link() {
+    return this.incoming_link != null || this.outgoing_link != null
+  }
+
   get_node_color() {
     this.parent_node.color
   }
@@ -75,6 +79,26 @@ class LinkPoint {
 
   can_create_outgoing_link() {
     return this.outgoing_link === null
+  }
+
+  dispose() {
+    if (this.incoming_link != null ) {
+      //This is possibly backward as the links themselves call back to the
+      // linkpoints to set the incoming or outgoing link variables to null
+      // TODO: Refactor this
+      this.incoming_link.dispose()
+    }
+
+    if (this.outgoing_link != null) {
+      //This is possibly backward as the links themselves call back to the
+      // linkpoints to set the incoming or outgoing link variables to null
+      // TODO: Refactor this
+      this.outgoing_link.dispose()
+    }
+
+    this.geometry.dispose()
+    this.material.dispose()
+    window.scene.remove(this.mesh)
   }
 }
 
