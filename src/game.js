@@ -65,6 +65,12 @@ class Game {
 
   update_economy = function() {
     this.state.economy.update(this.state)
+    this.generate_new_nodes()
+    this.eliminate_unsupplied_nodes()
+  }
+
+  generate_new_nodes() {
+    //Can se consolidate this logic somewhere. Is there a better abstraction for economic updates?
     var nodes_to_create = this.state.economy.get_node_creation()
     nodes_to_create.forEach((node_color) => {
       var colors_demanding = Node.COLOR_OUTPUT[node_color]
@@ -82,37 +88,30 @@ class Game {
         )
       )
     })
+  }
 
+  eliminate_unsupplied_nodes() {
     var overpriced_colors = this.state.economy.get_node_deletion()
 
-    console.log("overpriced colors: ", overpriced_colors)
     //get all unsupplied nodes demanding that color
     var colors_to_destroy = [...new Set(
       overpriced_colors.map((node_color) => {
-
-          return Node.COLOR_OUTPUT[node_color]
-        }).flat()
-      )
+        return Node.COLOR_OUTPUT[node_color]
+      }).flat()
+    )
     ]
 
-    console.log("colors_to_destroy", colors_to_destroy)
     //select nodes with a color within the colors to destroy
-
     var nodes_to_destroy = this.state.get_nodes().filter((node) => {
-
       return colors_to_destroy.includes(node.color) && node.tier !== Node.TIERS.THREE
     })
 
     //randomly select a node to destroy
-    var node_to_destroy = nodes_to_destroy[Math.floor(Math.random() * nodes_to_destroy.length)]
-
-    //We're not modifying the nodes registered in the state object.
-    //How do we tell the state which node to destroy
-    if (node_to_destroy !== undefined) {
+    if (nodes_to_destroy.length > 0) {
+      var node_to_destroy = nodes_to_destroy[Math.floor(Math.random() * nodes_to_destroy.length)]
       this.state.deregister_node(node_to_destroy)
       node_to_destroy.dispose()
     }
-
   }
 
   update_information_panel() {
