@@ -94,16 +94,17 @@ class Game {
     var overpriced_colors = this.state.economy.get_node_deletion()
 
     //get all unsupplied nodes demanding that color
-    var colors_to_destroy = [...new Set(
-      overpriced_colors.map((node_color) => {
-        return Node.COLOR_OUTPUT[node_color]
-      }).flat()
-    )
+    var colors_to_destroy = [
+      ...new Set(
+        overpriced_colors.map((node_color) => {
+          return Node.COLOR_OUTPUT[node_color]
+        }).flat()
+      )
     ]
 
     //select nodes with a color within the colors to destroy
     var nodes_to_destroy = this.state.get_nodes().filter((node) => {
-      return colors_to_destroy.includes(node.color) && node.tier !== Node.TIERS.THREE
+      return colors_to_destroy.includes(node.color) && node.tier !== Node.TIERS.THREE && !node.has_existing_link()
     })
 
     //randomly select a node to destroy
