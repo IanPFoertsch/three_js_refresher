@@ -3,6 +3,7 @@ import * as THREE from 'three'
 import {LinkPoint} from "./link_point"
 
 class Node {
+  static node_count = 0
   static COLORS = {
     RED: "RED",
     BLUE: "BLUE",
@@ -29,6 +30,10 @@ class Node {
     THREE: 3,
     FOUR: 4,
     FIVE: 5
+  }
+
+  static generate_identifier = function() {
+    return Node.node_count += 1
   }
 
   //[output color] => [list of colors that accept this as an input]
@@ -93,9 +98,10 @@ class Node {
     this.position = position
     this.color = color
     this.tier = tier
-
+    this.identifier = Node.generate_identifier()
     this.link_points = this.create_link_points(scene)
     this.icon = Node.map_tier_from_icon(tier, position, color, scene, this)
+    this.force_vector = null
   }
 
   get_link_points() {

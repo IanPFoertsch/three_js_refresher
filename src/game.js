@@ -4,16 +4,17 @@ import { InputHandler } from './input_handler'
 import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import { Economy, GlobalSupply } from './economy';
 import { Node } from './node'
+import { config } from '../app.config'
 
 
 class Game {
   constructor() {
+    this.node_counter = 0;
     this.scene = new THREE.Scene()
     window.scene = this.scene
     this.state = new State()
     window.state = this.state
     window.game = this
-
     this.camera = new THREE.PerspectiveCamera(
       75, // field of view -> in degrees? instead of Rads
       window.innerWidth / window.innerHeight, //Aspect Ratio
@@ -39,8 +40,6 @@ class Game {
     }, 1000)
 
 
-
-
     this.labelRenderer = new CSS2DRenderer();
     this.labelRenderer.setSize(window.innerWidth, window.innerHeight);
     this.labelRenderer.domElement.style.position = 'absolute';
@@ -63,14 +62,69 @@ class Game {
 
   }
 
-  update_economy = function() {
-    this.state.economy.update(this.state)
-    this.generate_new_nodes()
-    this.eliminate_unsupplied_nodes()
+  get_distance_between_nodes = function(node_1, node_2) {
+    var vector = this.get_vector_between_nodes(node_1, node_2)
+
+    return Math.sqrt((x_diff * x_diff) + (y_diff * y_diff));
   }
 
-  generate_new_nodes() {
-    //Can se consolidate this logic somewhere. Is there a better abstraction for economic updates?
+  get_vector_between_nodes = function (node_1, node_2) {
+    var x_diff = node_2.position[0] - node_1.position[0]
+    var y_diff = node_2.position[1] - node_1.position[1]
+    return [x_diff, y_diff]
+  }
+
+  update_node_forces = function () {
+    //for each node, calculate their forces.
+    //All nodes repel all other nodes (this is an n-factorial operation, we'll need to implement k nearest neighbors or something)
+    //  node repulsion is high at short distances, low or non-existent at long distances
+    var nodes = this.state.get_nodes()
+    var all_pairs = nodes.flatMap(
+      (v, i) => nodes.slice(i + 1).map(w => [v, w])
+    );
+    var node_forces = {}
+    all_pairs.forEach((pair_of_nodes) => {
+      //How are we going to store the node forces?
+      // Add a vector to the nodes? Nodes have a direction & speed?
+      // The vector = sum of all forces acting on the node
+      // Force between the nodes =
+      //calculate the force between the nodes
+      // for each node in the pair, increment the node's force vector by that amount
+      //get distance between nodes
+      var distance_between_nodes = this.get_distance_between_nodes(pair_of_nodes[0], pair_of_nodes[1])
+      var force = Math.log(distance_between_nodes)
+      var direction_vector = this.get_vector_between_nodes(pair_of_nodes[0], pair_of_nodes[1])
+      console.log(direction_vector)
+      //we have both a force and a vector. The vector for each pair points to the other node
+
+
+    })
+
+  }
+
+  //TODO: rename to "Update game state" as we
+  // are doing more than economic updates now
+  update_economy = function() {
+    this.state.economy.update(this.state)
+
+    //TODO: We should build this functionally on initialization, as these config values won't be changing
+    // within a particular game run
+    if (config.graph.create_nodes) {
+      this.generate_new_nodes()
+    }
+
+    if (config.graph.destroy_nodes) {
+      this.eliminate_unsupplied_nodes()
+    }
+
+    if (config.graph.enable_force_directed_graph) {
+      this.update_node_forces()
+    }
+
+  }
+
+  generate_new_nodes() {s
+    //Can we consolidate this logic somewhere. Is there a better abstraction for economic updates?
     var nodes_to_create = this.state.economy.get_node_creation()
     nodes_to_create.forEach((node_color) => {
       var colors_demanding = Node.COLOR_OUTPUT[node_color]
@@ -142,9 +196,7 @@ class Game {
   }
 
   add_node = function(node) {
-    // this.scene.add(node)
     this.state.register_node(node)
-    //nodes are being added to the state.
   }
 
   add_light = function(light) {
