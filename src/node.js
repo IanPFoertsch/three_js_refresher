@@ -104,6 +104,12 @@ class Node {
     this.force_vector = null
   }
 
+  update_position_by_differential(position_differential) {
+    this.position[0] += position_differential[0]
+    this.position[1] += position_differential[1]
+    this.icon.update_position(this.position)
+  }
+
   get_link_points() {
     return this.link_points.map(link_point => {
       return link_point.mesh
@@ -134,6 +140,8 @@ class Node {
       return new LinkPoint(this.position, scene, connection_number, this)
     });
   }
+
+
 
   demands_by_color() {
     if (this.tier === Node.TIERS.THREE) {
@@ -191,8 +199,9 @@ class NodeIcon {
     }
   }
 
+
+
   constructor(position, color, scene, tier, node) {
-    this.position = position
     this.node = node
 
     this.geometry = new THREE.ConeGeometry(4, 2, tier);
@@ -200,9 +209,14 @@ class NodeIcon {
     this.geometry.rotateZ(NodeIcon.rotate_z_degrees(tier))
     this.material = new THREE.MeshPhongMaterial({ color: Node.COLOR_HEX_CODES[color] })
     this.mesh = new THREE.Mesh(this.geometry, this.material)
-    this.mesh.position.set(this.position[0], this.position[1], 0)
 
+    this.update_position(position)
     scene.add(this.mesh)
+  }
+
+  update_position(new_position) {
+    this.position = new_position
+    this.mesh.position.set(this.position[0], this.position[1], 0)
   }
 
   dispose() {

@@ -4,7 +4,8 @@ const config = {
     create_nodes: false,
     destroy_nodes: false,
     enable_force_directed_graph: true
-  }
+  },
+  STANDOFF_DISTANCE: 2
 
 }
 

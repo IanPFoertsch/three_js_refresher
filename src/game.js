@@ -37,7 +37,7 @@ class Game {
     window.setInterval(() => {
       this.update_economy()
       this.update_information_panel()
-    }, 1000)
+    }, 200)
 
 
     this.labelRenderer = new CSS2DRenderer();
@@ -62,16 +62,35 @@ class Game {
 
   }
 
-  get_distance_between_nodes = function(node_1, node_2) {
-    var vector = this.get_vector_between_nodes(node_1, node_2)
-
-    return Math.sqrt((x_diff * x_diff) + (y_diff * y_diff));
-  }
-
+  //TODO: We need to consolidate this to a linear algebra library
   get_vector_between_nodes = function (node_1, node_2) {
     var x_diff = node_2.position[0] - node_1.position[0]
     var y_diff = node_2.position[1] - node_1.position[1]
     return [x_diff, y_diff]
+  }
+
+  get_vector_magnitude = function(vector) {
+    return Math.sqrt((vector[0] * vector[0]) + (vector[1] * vector[1]))
+  }
+
+
+  get_unit_vector_between_nodes = function (node_1, node_2) {
+    var vector = get_vector_between_nodes(node_1, node_2)
+    var magnitude = get_vector_magnitude(vector)
+
+    return vector.map((element) => {
+      return element / magnitude
+    })
+  }
+
+  universal_node_spacer = function(magnitude) {
+    return Math.log(magnitude * config.STANDOFF_DISTANCE)
+  }
+
+  invert_vector = function(vector) {
+    return vector.map((element) => {
+      return - element
+    })
   }
 
   update_node_forces = function () {
@@ -82,7 +101,13 @@ class Game {
     var all_pairs = nodes.flatMap(
       (v, i) => nodes.slice(i + 1).map(w => [v, w])
     );
-    var node_forces = {}
+
+    var node_forces = nodes.reduce((node_forces, node) => {
+      node_forces[node.identifier] = []
+      return node_forces
+    }, {})
+
+
     all_pairs.forEach((pair_of_nodes) => {
       //How are we going to store the node forces?
       // Add a vector to the nodes? Nodes have a direction & speed?
@@ -91,15 +116,51 @@ class Game {
       //calculate the force between the nodes
       // for each node in the pair, increment the node's force vector by that amount
       //get distance between nodes
-      var distance_between_nodes = this.get_distance_between_nodes(pair_of_nodes[0], pair_of_nodes[1])
-      var force = Math.log(distance_between_nodes)
-      var direction_vector = this.get_vector_between_nodes(pair_of_nodes[0], pair_of_nodes[1])
-      console.log(direction_vector)
-      //we have both a force and a vector. The vector for each pair points to the other node
+      var vector = this.get_vector_between_nodes(pair_of_nodes[0], pair_of_nodes[1])
+      var magnitude = this.get_vector_magnitude(vector)
+      console.log("Magnitude: ", magnitude)
+      var unit_vector = vector.map((element) => {
+        return element / magnitude
+      })
 
+      var force = this.universal_node_spacer(magnitude)
+      console.log("The force stuff", force)
+      var force_vector = unit_vector.map((element) => {
+        return element / force
+      })
 
+      //for node 0, add the force vector,
+      node_forces[pair_of_nodes[0].identifier].push(force_vector)
+      //for node 1, add the inverted force vector
+      node_forces[pair_of_nodes[1].identifier].push(this.invert_vector(force_vector))
     })
 
+    //At the moment, our node forces array only has 1 element, so we just need to update the node's positions
+    // Are we updating the movement vector?
+    // With every tick, update position by force vector / ticks per second
+
+    Object.keys(node_forces).forEach((node_identifier) => {
+      var vector = node_forces[node_identifier].reduce((total_force, force_vector) => {
+        add_vector(total_force, force_vector)
+        return total_force
+      })
+
+      //Why is the vector increasing? it should be decreasing as the nodes get closer together
+      console.log("The force vector is now", vector)
+
+      var node = this.state.get_nodes().find((node) => { return node.identifier == node_identifier})
+      node.update_position_by_differential(vector)
+      // console.log("node ", node.identifier, " position is now: ", node.position)
+    })
+
+  }
+
+  add_vector = function(vector_one, vector_two) {
+    // TODO: This way of doing this is and error prone
+    // but maybe memory efficient b/c we're not creating
+    // throwaway arrays
+    vector_one[0] += vector_two[0]
+    vector_one[1] += vector_two[1]
   }
 
   //TODO: rename to "Update game state" as we

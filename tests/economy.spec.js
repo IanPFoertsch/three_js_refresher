@@ -24,7 +24,6 @@ describe('Economy', () => {
   let economy
   const jestConsole = console
 
-
   beforeEach(() => {
     global.console = require('console');
   });
