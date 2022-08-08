@@ -108,6 +108,9 @@ class Node {
     this.position[0] += position_differential[0]
     this.position[1] += position_differential[1]
     this.icon.update_position(this.position)
+    this.link_points.map((link_point) => {
+      link_point.update_position(this.position)
+    })
   }
 
   get_link_points() {

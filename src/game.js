@@ -37,7 +37,7 @@ class Game {
     window.setInterval(() => {
       this.update_economy()
       this.update_information_panel()
-    }, 200)
+    }, 1000)
 
 
     this.labelRenderer = new CSS2DRenderer();
@@ -118,13 +118,11 @@ class Game {
       //get distance between nodes
       var vector = this.get_vector_between_nodes(pair_of_nodes[0], pair_of_nodes[1])
       var magnitude = this.get_vector_magnitude(vector)
-      console.log("Magnitude: ", magnitude)
       var unit_vector = vector.map((element) => {
         return element / magnitude
       })
 
       var force = this.universal_node_spacer(magnitude)
-      console.log("The force stuff", force)
       var force_vector = unit_vector.map((element) => {
         return element / force
       })
@@ -146,11 +144,9 @@ class Game {
       })
 
       //Why is the vector increasing? it should be decreasing as the nodes get closer together
-      console.log("The force vector is now", vector)
 
       var node = this.state.get_nodes().find((node) => { return node.identifier == node_identifier})
       node.update_position_by_differential(vector)
-      // console.log("node ", node.identifier, " position is now: ", node.position)
     })
 
   }

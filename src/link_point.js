@@ -21,19 +21,23 @@ class LinkPoint {
     this.mesh = new THREE.Mesh(this.geometry, this.material);
     this.mesh.userData.parent = this
     this.parent_node = parent_node
-    this.position = this.calculate_position(position, connection_number)
-    this.mesh.position.set(this.position[0], this.position[1], 0)
+    this.connection_number = connection_number
+    this.position = [0,0]
+    this.update_position(position)
     scene.add(this.mesh)
     this.incoming_link = null
     this.outgoing_link = null
   }
 
-  calculate_position(parent_position, rotation) {
-    return [
-      parent_position[0] + LinkPoint.calculate_offset(rotation)[0],
-      parent_position[1] + LinkPoint.calculate_offset(rotation)[1]
-    ]
+  update_position(new_position) {
+    console.log(" the new position", new_position, "rotation: ", )
+    this.position[0] = new_position[0] + LinkPoint.calculate_offset(this.connection_number)[0]
+    this.position[1] = new_position[1] + LinkPoint.calculate_offset(this.connection_number)[1]
+
+    this.mesh.position.set(this.position[0], this.position[1], 0)
   }
+
+
 
   has_existing_link() {
     return this.incoming_link != null || this.outgoing_link != null
