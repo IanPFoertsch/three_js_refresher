@@ -5,8 +5,6 @@ import { Graph } from './game/graph'
 
 class State {
   constructor() {
-    this.nodes = []
-    this.links = []
     this.world_plane = null
     this.open_link = null
     this.economy = new Economy()
@@ -61,6 +59,10 @@ class State {
 
   get_nodes = function() {
     return this.graph.get_nodes()
+  }
+
+  get_links = function() {
+    return this.graph.get_links()
   }
 }
 

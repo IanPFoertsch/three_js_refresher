@@ -136,7 +136,9 @@ class Game {
 
   update_information_panel() {
     var player_income = 0
-    this.state.links.forEach(link => {
+    //Note: this long linkage doesn't make sense... the game should have a reference to the graph in particular
+    // Are we just replacing the state with the graph?
+    this.state.get_links().forEach(link => {
       player_income += link.get_link_value()
     });
 

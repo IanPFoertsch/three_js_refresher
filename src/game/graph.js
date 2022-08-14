@@ -18,7 +18,7 @@ class Graph {
   }
 
   add_link = function (link_to_add) {
-    this.links.push(this.open_link)
+    this.links.push(link_to_add)
   }
 
   get_clickable_objects = function() {
@@ -30,6 +30,10 @@ class Graph {
 
   get_nodes = function() {
     return this.nodes
+  }
+
+  get_links = function() {
+    return this.links
   }
 
   update_node_forces = function () {

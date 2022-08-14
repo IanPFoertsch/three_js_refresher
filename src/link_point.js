@@ -39,7 +39,6 @@ class LinkPoint {
     }
 
     if (this.outgoing_link !== null) {
-      console.log("updating the outgoing linkpoint's render")
       this.outgoing_link.update_render()
     }
 
