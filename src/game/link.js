@@ -65,8 +65,6 @@ class Link {
         this.destination_link_point.position[0],
         this.destination_link_point.position[1]
       )
-    } else {
-      this.ui_representation.update_render()
     }
   }
 

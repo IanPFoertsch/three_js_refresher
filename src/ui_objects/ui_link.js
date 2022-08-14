@@ -23,6 +23,8 @@ class UILink {
   set_origin(x, y) {
     this.positions[0] = x
     this.positions[1] = y
+
+    this.update_render()
   }
 
   draw_to_point(x, y) {
