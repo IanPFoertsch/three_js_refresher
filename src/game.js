@@ -37,7 +37,7 @@ class Game {
     window.setInterval(() => {
       this.update_economy()
       this.update_information_panel()
-    }, 1000)
+    }, 100)
 
 
     this.labelRenderer = new CSS2DRenderer();
@@ -84,15 +84,11 @@ class Game {
   }
 
   universal_node_spacer = function(magnitude) {
-    // console.log("nodes are ", magnitude, " apart")
-    // console.log("Magnitude is now", magnitude)
-    // if (magnitude > 4) {
-    //   // console.log("in here returning 2", Math.pow((4 - 2), 3))
-    //   return Math.pow((4 - 2), 3)
-    // }
-    // console.log("here, returning ", Math.pow((magnitude - 2), 3))
-    var max_distance = 8
-    var min_distance = 2
+    // TODO: make these values configurable
+    var STANDOFF_DISTANCE = 20
+    var max_distance = STANDOFF_DISTANCE + 3
+    var min_distance = STANDOFF_DISTANCE - 3
+
     if (magnitude > max_distance) {
       //TODO: Memoize these values
       magnitude = max_distance
@@ -100,9 +96,8 @@ class Game {
       //TODO: Memoize these values
       magnitude = min_distance
     }
-
-    return Math.pow((magnitude - 5), 3) / 10
-
+    // function = f(x) = ((distance - Standoff distance) ^ 3) / Dampening force
+    return Math.pow(magnitude - (STANDOFF_DISTANCE), 3) / Math.pow(STANDOFF_DISTANCE, 2)
   }
 
   invert_vector = function(vector) {
@@ -139,13 +134,11 @@ class Game {
       var unit_vector = vector.map((element) => {
         return element / magnitude
       })
-      console.log("unit_vector, ", unit_vector)
+
       var force = this.universal_node_spacer(magnitude)
       var force_vector = unit_vector.map((element) => {
         return element * force
       })
-
-      console.log("force vector is now", force_vector)
 
       //for node 0, add the force vector,
       node_forces[pair_of_nodes[0].identifier].push(force_vector)
@@ -159,10 +152,10 @@ class Game {
 
     Object.keys(node_forces).forEach((node_identifier) => {
       var vector = node_forces[node_identifier].reduce((total_force, force_vector) => {
-        add_vector(total_force, force_vector)
+        this.add_vector(total_force, force_vector)
         return total_force
       })
-
+      console.log('HERE')
       //Why is the vector increasing? it should be decreasing as the nodes get closer together
 
       var node = this.state.get_nodes().find((node) => { return node.identifier == node_identifier})
