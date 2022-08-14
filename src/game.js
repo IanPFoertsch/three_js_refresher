@@ -85,9 +85,12 @@ class Game {
 
   universal_node_spacer = function(magnitude) {
     // TODO: make these values configurable
-    var STANDOFF_DISTANCE = 20
+    var STANDOFF_DISTANCE = 15
     var max_distance = STANDOFF_DISTANCE + 3
-    var min_distance = STANDOFF_DISTANCE - 3
+    //If we're comparing all nodes instead of just nearest neighbors, we need to repulse more strongly than we attact,
+    // otherwise at the edges of the graph nodes become clumped as the net attraction is higher than the repulsion
+    // to nodes they're near
+    var min_distance = STANDOFF_DISTANCE - 6
 
     if (magnitude > max_distance) {
       //TODO: Memoize these values
