@@ -21,22 +21,34 @@ class LinkPoint {
     this.mesh = new THREE.Mesh(this.geometry, this.material);
     this.mesh.userData.parent = this
     this.parent_node = parent_node
-    this.position = this.calculate_position(position, connection_number)
-    this.mesh.position.set(this.position[0], this.position[1], 0)
-    scene.add(this.mesh)
+    this.connection_number = connection_number
+    this.position = [0,0]
     this.incoming_link = null
     this.outgoing_link = null
+    this.update_position(position)
+    scene.add(this.mesh)
+
   }
 
-  calculate_position(parent_position, rotation) {
-    return [
-      parent_position[0] + LinkPoint.calculate_offset(rotation)[0],
-      parent_position[1] + LinkPoint.calculate_offset(rotation)[1]
-    ]
+  update_position(new_position) {
+    this.position[0] = new_position[0] + LinkPoint.calculate_offset(this.connection_number)[0]
+    this.position[1] = new_position[1] + LinkPoint.calculate_offset(this.connection_number)[1]
+
+    if (this.incoming_link !== null) {
+      this.incoming_link.update_render()
+    }
+
+    if (this.outgoing_link !== null) {
+      this.outgoing_link.update_render()
+    }
+
+    this.mesh.position.set(this.position[0], this.position[1], 0)
   }
+
+
 
   has_existing_link() {
-    return this.incoming_link != null || this.outgoing_link != null
+    return this.incoming_link !== null || this.outgoing_link !== null
   }
 
   get_node_color() {

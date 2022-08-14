@@ -23,6 +23,8 @@ class UILink {
   set_origin(x, y) {
     this.positions[0] = x
     this.positions[1] = y
+
+    this.update_render()
   }
 
   draw_to_point(x, y) {
@@ -36,6 +38,13 @@ class UILink {
     this.positions[4] = y
     //TODO: can we simplify this access?
 
+    this.update_render()
+  }
+
+  update_render() {
+    if (this.label !== undefined ) {
+      this.update_label_position()
+    }
     this.mesh.geometry.attributes.position.needsUpdate = true
   }
 
@@ -49,12 +58,16 @@ class UILink {
     this.label = new CSS2DObject(this.div)
 
     //Place the label halfway between the source & destination positions.
+    this.update_label_position()
+    this.mesh.add(this.label)
+    this.label.layers.set(0)
+  }
+
+  update_label_position() {
     this.label.position.set(
       (this.positions[0] + this.positions[3]) / 2,
       (this.positions[1] + this.positions[4]) / 2
     );
-    this.mesh.add(this.label)
-    this.label.layers.set(0)
   }
 
   dispose() {

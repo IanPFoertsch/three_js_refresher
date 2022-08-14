@@ -104,7 +104,7 @@ class InputHandler {
   }
 
   get_clicked_object = function(mouse_event) {
-    var intersects = this.get_intersecting_objects(mouse_event, this.state.get_clickable_objects())
+    var intersects = this.get_intersecting_objects(mouse_event, this.state.get_graph().get_clickable_objects())
     //Note this returns our game object, not the mesh
     return intersects.length === 0 ? undefined : intersects[0].object.userData.parent
   }

@@ -25,7 +25,6 @@ class Link {
       this.get_quantity_supplied()
   }
 
-
   add_label() {
     this.ui_representation.add_label(
       this.get_link_value()
@@ -40,21 +39,33 @@ class Link {
     this.origin_link_point = origin_link_point
     this.origin_link_point.register_outgoing_link(this)
 
+    this.update_render()
+  }
+
+  link_to_link_point(destination_link_point) {
+    this.destination_link_point = destination_link_point
+    destination_link_point.register_incoming_link(this)
+    this.add_label()
+    this.update_render()
+  }
+
+  draw_to_point(x, y) {
+    this.ui_representation.draw_to_point(x, y)
+  }
+
+  update_render() {
+    console.log("updating render in link")
     this.ui_representation.set_origin(
       this.origin_link_point.position[0],
       this.origin_link_point.position[1]
     )
-  }
 
-  link_to_link_point(destination_link_point) {
-    this.draw_to_point(destination_link_point.position[0], destination_link_point.position[1])
-    destination_link_point.register_incoming_link(this)
-    this.add_label()
-  }
-
-
-  draw_to_point(x, y) {
-    this.ui_representation.draw_to_point(x, y)
+    if (this.destination_link_point !== null) {
+      this.draw_to_point(
+        this.destination_link_point.position[0],
+        this.destination_link_point.position[1]
+      )
+    }
   }
 
   dispose() {

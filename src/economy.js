@@ -45,6 +45,14 @@ class Economy {
     this.global_demand = new GlobalDemand()
   }
 
+  get_links = function() {
+    return window.state.get_graph().get_links()
+  }
+
+  get_nodes = function() {
+    return window.state.get_graph().get_nodes()
+  }
+
   //This is the global demand curve function
   get_price_for_color(color) {
 
@@ -57,16 +65,16 @@ class Economy {
     // -- Lower intercept = market demands less of this color
     var supply = this.global_supply.get_supply_for_color(color)
     var demand = this.global_demand.get_demand_for_color(color)
-    // console.log("color", color, " supply: ", supply, " demand: ", demand)
+
     return ( - supply ) + demand
   }
 
   //Update the economy's supply and demand from the current state of the board
-  update(state) {
+  update() {
     //Update supply
     var current_supply = new GlobalSupply()
 
-    state.links.forEach(link => {
+    this.get_links().forEach(link => {
       current_supply.increase_supply_for_color(
         link.get_color_supplied(),
         link.get_quantity_supplied()
@@ -76,12 +84,12 @@ class Economy {
 
     //Update demand
     var current_demand = new GlobalDemand()
-    state.nodes.forEach(node => {
+    this.get_nodes().forEach(node => {
       node.demands_by_color().forEach(color_demanded => {
         current_demand.increase_demand_for_color(color_demanded, 10)
       })
     })
-    // console.log("logging demand!", current_demand)
+
     this.global_demand = current_demand
   }
 

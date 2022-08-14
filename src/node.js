@@ -3,6 +3,7 @@ import * as THREE from 'three'
 import {LinkPoint} from "./link_point"
 
 class Node {
+  static node_count = 0
   static COLORS = {
     RED: "RED",
     BLUE: "BLUE",
@@ -29,6 +30,10 @@ class Node {
     THREE: 3,
     FOUR: 4,
     FIVE: 5
+  }
+
+  static generate_identifier = function() {
+    return Node.node_count += 1
   }
 
   //[output color] => [list of colors that accept this as an input]
@@ -93,9 +98,19 @@ class Node {
     this.position = position
     this.color = color
     this.tier = tier
-
+    this.identifier = Node.generate_identifier()
     this.link_points = this.create_link_points(scene)
     this.icon = Node.map_tier_from_icon(tier, position, color, scene, this)
+    this.force_vector = null
+  }
+
+  update_position_by_differential(position_differential) {
+    this.position[0] += position_differential[0]
+    this.position[1] += position_differential[1]
+    this.icon.update_position(this.position)
+    this.link_points.map((link_point) => {
+      link_point.update_position(this.position)
+    })
   }
 
   get_link_points() {
@@ -129,6 +144,8 @@ class Node {
     });
   }
 
+
+
   demands_by_color() {
     if (this.tier === Node.TIERS.THREE) {
       //Three-tier nodes are producers only, accepting no inputs
@@ -160,15 +177,13 @@ class Node {
 
   dispose() {
     //Dispose of linkpoints & propagate destroy down through them
-    // dispose of the nodeIcon
     this.link_points.forEach((link_point) => {
       link_point.dispose()
     })
+    // dispose of the nodeIcon
     this.icon.dispose()
-    //The node class itself has no THREE.js components
-    // this.geometry.dispose()
-    // this.material.dispose()
-    // window.scene.remove(this.mesh)
+    //The node class itself has no THREE.js components,
+    // so we don't need to dispose of mesh, geometry, or remove it from the scene
   }
 }
 
@@ -186,7 +201,6 @@ class NodeIcon {
   }
 
   constructor(position, color, scene, tier, node) {
-    this.position = position
     this.node = node
 
     this.geometry = new THREE.ConeGeometry(4, 2, tier);
@@ -194,9 +208,14 @@ class NodeIcon {
     this.geometry.rotateZ(NodeIcon.rotate_z_degrees(tier))
     this.material = new THREE.MeshPhongMaterial({ color: Node.COLOR_HEX_CODES[color] })
     this.mesh = new THREE.Mesh(this.geometry, this.material)
-    this.mesh.position.set(this.position[0], this.position[1], 0)
 
+    this.update_position(position)
     scene.add(this.mesh)
+  }
+
+  update_position(new_position) {
+    this.position = new_position
+    this.mesh.position.set(this.position[0], this.position[1], 0)
   }
 
   dispose() {

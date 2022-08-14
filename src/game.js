@@ -4,16 +4,17 @@ import { InputHandler } from './input_handler'
 import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import { Economy, GlobalSupply } from './economy';
 import { Node } from './node'
+import { config } from '../app.config'
 
 
 class Game {
   constructor() {
+    this.node_counter = 0;
     this.scene = new THREE.Scene()
     window.scene = this.scene
     this.state = new State()
     window.state = this.state
     window.game = this
-
     this.camera = new THREE.PerspectiveCamera(
       75, // field of view -> in degrees? instead of Rads
       window.innerWidth / window.innerHeight, //Aspect Ratio
@@ -36,9 +37,17 @@ class Game {
     window.setInterval(() => {
       this.update_economy()
       this.update_information_panel()
-    }, 1000)
+    }, 3000)
 
+    //TODO: Ideally we'll be performing these graph updates
+    // on the animation loop to make them smoother.
+    // Also, we should offload the force calculations to a separate thread to improve
 
+    window.setInterval(() => {
+      if (config.graph.enable_force_directed_graph) {
+        this.state.get_graph().update_node_forces()
+      }
+    }, 100)
 
 
     this.labelRenderer = new CSS2DRenderer();
@@ -63,14 +72,24 @@ class Game {
 
   }
 
+  //TODO: rename to "Update game state" as we
+  // are doing more than economic updates now
   update_economy = function() {
     this.state.economy.update(this.state)
-    this.generate_new_nodes()
-    this.eliminate_unsupplied_nodes()
+
+    //TODO: We should build this functionally on initialization, as these config values won't be changing
+    // within a particular game run
+    if (config.graph.create_nodes) {
+      this.generate_new_nodes()
+    }
+
+    if (config.graph.destroy_nodes) {
+      this.eliminate_unsupplied_nodes()
+    }
   }
 
   generate_new_nodes() {
-    //Can se consolidate this logic somewhere. Is there a better abstraction for economic updates?
+    //Can we consolidate this logic somewhere. Is there a better abstraction for economic updates?
     var nodes_to_create = this.state.economy.get_node_creation()
     nodes_to_create.forEach((node_color) => {
       var colors_demanding = Node.COLOR_OUTPUT[node_color]
@@ -117,7 +136,9 @@ class Game {
 
   update_information_panel() {
     var player_income = 0
-    this.state.links.forEach(link => {
+    //Note: this long linkage doesn't make sense... the game should have a reference to the graph in particular
+    // Are we just replacing the state with the graph?
+    this.state.get_links().forEach(link => {
       player_income += link.get_link_value()
     });
 
@@ -142,9 +163,7 @@ class Game {
   }
 
   add_node = function(node) {
-    // this.scene.add(node)
     this.state.register_node(node)
-    //nodes are being added to the state.
   }
 
   add_light = function(light) {
