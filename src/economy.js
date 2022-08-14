@@ -57,7 +57,7 @@ class Economy {
     // -- Lower intercept = market demands less of this color
     var supply = this.global_supply.get_supply_for_color(color)
     var demand = this.global_demand.get_demand_for_color(color)
-    // console.log("color", color, " supply: ", supply, " demand: ", demand)
+
     return ( - supply ) + demand
   }
 
@@ -81,7 +81,7 @@ class Economy {
         current_demand.increase_demand_for_color(color_demanded, 10)
       })
     })
-    // console.log("logging demand!", current_demand)
+
     this.global_demand = current_demand
   }
 

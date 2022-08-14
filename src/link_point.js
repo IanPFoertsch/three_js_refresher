@@ -23,15 +23,25 @@ class LinkPoint {
     this.parent_node = parent_node
     this.connection_number = connection_number
     this.position = [0,0]
-    this.update_position(position)
-    scene.add(this.mesh)
     this.incoming_link = null
     this.outgoing_link = null
+    this.update_position(position)
+    scene.add(this.mesh)
+
   }
 
   update_position(new_position) {
     this.position[0] = new_position[0] + LinkPoint.calculate_offset(this.connection_number)[0]
     this.position[1] = new_position[1] + LinkPoint.calculate_offset(this.connection_number)[1]
+
+    if (this.incoming_link !== null) {
+      this.incoming_link.update_render()
+    }
+
+    if (this.outgoing_link !== null) {
+      console.log("updating the outgoing linkpoint's render")
+      this.outgoing_link.update_render()
+    }
 
     this.mesh.position.set(this.position[0], this.position[1], 0)
   }
@@ -39,7 +49,7 @@ class LinkPoint {
 
 
   has_existing_link() {
-    return this.incoming_link != null || this.outgoing_link != null
+    return this.incoming_link !== null || this.outgoing_link !== null
   }
 
   get_node_color() {

@@ -37,7 +37,7 @@ class Game {
     window.setInterval(() => {
       this.update_economy()
       this.update_information_panel()
-    }, 100)
+    }, 1000)
 
 
     this.labelRenderer = new CSS2DRenderer();
@@ -86,7 +86,7 @@ class Game {
   universal_node_spacer = function(magnitude) {
     // TODO: make these values configurable
     var STANDOFF_DISTANCE = 15
-    var max_distance = STANDOFF_DISTANCE + 3
+    var max_distance = STANDOFF_DISTANCE + 2
     //If we're comparing all nodes instead of just nearest neighbors, we need to repulse more strongly than we attact,
     // otherwise at the edges of the graph nodes become clumped as the net attraction is higher than the repulsion
     // to nodes they're near
@@ -158,7 +158,7 @@ class Game {
         this.add_vector(total_force, force_vector)
         return total_force
       })
-      console.log('HERE')
+
       //Why is the vector increasing? it should be decreasing as the nodes get closer together
 
       var node = this.state.get_nodes().find((node) => { return node.identifier == node_identifier})

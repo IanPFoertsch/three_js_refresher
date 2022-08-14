@@ -20,10 +20,7 @@ class State {
   }
 
   deregister_node = function(node_to_deregister) {
-    // console.log("deregistering node!", this.nodes.length)
-    // console.log(node_to_deregister)
     this.nodes = this.nodes.filter((node) => {
-      // console.log("comparing node", node.color, node.position, " with", node_to_deregister.color, node_to_deregister.position)
       return node !== node_to_deregister
     })
   }
