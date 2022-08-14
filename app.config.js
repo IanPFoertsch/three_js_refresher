@@ -5,8 +5,9 @@ const config = {
     destroy_nodes: false,
     enable_force_directed_graph: true
   },
-  STANDOFF_DISTANCE: 2
-
+  STANDOFF_DISTANCE: 2,
+  MAX_ATTRACTIVE_FORCE: 2,
+  MAX_MAGNITUDE_VALUE: 3,
 }
 
 export { config }

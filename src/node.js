@@ -177,15 +177,13 @@ class Node {
 
   dispose() {
     //Dispose of linkpoints & propagate destroy down through them
-    // dispose of the nodeIcon
     this.link_points.forEach((link_point) => {
       link_point.dispose()
     })
+    // dispose of the nodeIcon
     this.icon.dispose()
-    //The node class itself has no THREE.js components
-    // this.geometry.dispose()
-    // this.material.dispose()
-    // window.scene.remove(this.mesh)
+    //The node class itself has no THREE.js components,
+    // so we don't need to dispose of mesh, geometry, or remove it from the scene
   }
 }
 
@@ -201,8 +199,6 @@ class NodeIcon {
         return (90 * (Math.PI / 180))
     }
   }
-
-
 
   constructor(position, color, scene, tier, node) {
     this.node = node

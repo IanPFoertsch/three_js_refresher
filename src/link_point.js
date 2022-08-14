@@ -30,7 +30,6 @@ class LinkPoint {
   }
 
   update_position(new_position) {
-    console.log(" the new position", new_position, "rotation: ", )
     this.position[0] = new_position[0] + LinkPoint.calculate_offset(this.connection_number)[0]
     this.position[1] = new_position[1] + LinkPoint.calculate_offset(this.connection_number)[1]
 

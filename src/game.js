@@ -84,7 +84,25 @@ class Game {
   }
 
   universal_node_spacer = function(magnitude) {
-    return Math.log(magnitude * config.STANDOFF_DISTANCE)
+    // console.log("nodes are ", magnitude, " apart")
+    // console.log("Magnitude is now", magnitude)
+    // if (magnitude > 4) {
+    //   // console.log("in here returning 2", Math.pow((4 - 2), 3))
+    //   return Math.pow((4 - 2), 3)
+    // }
+    // console.log("here, returning ", Math.pow((magnitude - 2), 3))
+    var max_distance = 8
+    var min_distance = 2
+    if (magnitude > max_distance) {
+      //TODO: Memoize these values
+      magnitude = max_distance
+    } else if (magnitude < min_distance) {
+      //TODO: Memoize these values
+      magnitude = min_distance
+    }
+
+    return Math.pow((magnitude - 5), 3) / 10
+
   }
 
   invert_vector = function(vector) {
@@ -121,11 +139,13 @@ class Game {
       var unit_vector = vector.map((element) => {
         return element / magnitude
       })
-
+      console.log("unit_vector, ", unit_vector)
       var force = this.universal_node_spacer(magnitude)
       var force_vector = unit_vector.map((element) => {
-        return element / force
+        return element * force
       })
+
+      console.log("force vector is now", force_vector)
 
       //for node 0, add the force vector,
       node_forces[pair_of_nodes[0].identifier].push(force_vector)
