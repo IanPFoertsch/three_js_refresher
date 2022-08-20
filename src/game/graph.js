@@ -1,7 +1,9 @@
 import { Node } from '../node'
+import { config } from '../../app.config'
 
 class Graph {
   constructor() {
+
     this.nodes = []
     this.links = []
   }
@@ -51,24 +53,8 @@ class Graph {
 
 
     all_pairs.forEach((pair_of_nodes) => {
-      //How are we going to store the node forces?
-      // Add a vector to the nodes? Nodes have a direction & speed?
-      // The vector = sum of all forces acting on the node
-      // Force between the nodes =
-      //calculate the force between the nodes
-      // for each node in the pair, increment the node's force vector by that amount
-      //get distance between nodes
-      var vector = this.get_vector_between_nodes(pair_of_nodes[0], pair_of_nodes[1])
-      var magnitude = this.get_vector_magnitude(vector)
-      var unit_vector = vector.map((element) => {
-        return element / magnitude
-      })
 
-      // var color_force = this.color_attraction(magnitude, pair_of_nodes)
-      var force = this.universal_node_spacer(magnitude)
-      var force_vector = unit_vector.map((element) => {
-        return element * force
-      })
+      var force_vector = this.calculate_force_between_nodes(pair_of_nodes[0], pair_of_nodes[1])
 
       //for node 0, add the force vector,
       node_forces[pair_of_nodes[0].identifier].push(force_vector)
@@ -91,7 +77,15 @@ class Graph {
   }
 
   calculate_force_between_nodes(node_1, node_2) {
+    var vector = this.get_vector_between_nodes(node_1, node_2)
+    var unit_vector = this.get_unit_vector_between_nodes(node_1, node_2)
+    var magnitude = this.get_vector_magnitude(vector)
 
+    var force = this.universal_node_spacer(magnitude)
+
+    return unit_vector.map((element) => {
+      return element * force
+    })
   }
 
   //TODO: We need to consolidate this to a linear algebra library
@@ -107,8 +101,8 @@ class Graph {
 
 
   get_unit_vector_between_nodes = function (node_1, node_2) {
-    var vector = get_vector_between_nodes(node_1, node_2)
-    var magnitude = get_vector_magnitude(vector)
+    var vector = this.get_vector_between_nodes(node_1, node_2)
+    var magnitude = this.get_vector_magnitude(vector)
 
     return vector.map((element) => {
       return element / magnitude
@@ -126,23 +120,15 @@ class Graph {
   // }
 
   universal_node_spacer = function (magnitude) {
-    // TODO: make these values configurable
-    var STANDOFF_DISTANCE = 15
-    var max_distance = STANDOFF_DISTANCE + 2
-    //If we're comparing all nodes instead of just nearest neighbors, we need to repulse more strongly than we attact,
-    // otherwise at the edges of the graph nodes become clumped as the net attraction is higher than the repulsion
-    // to nodes they're near
-    var min_distance = STANDOFF_DISTANCE - 6
-
-    if (magnitude > max_distance) {
-      //TODO: Memoize these values
-      magnitude = max_distance
-    } else if (magnitude < min_distance) {
-      //TODO: Memoize these values
-      magnitude = min_distance
+    if (magnitude > config.graph.node_spacing.MAX_ATTRACTION_DISTANCE) {
+      magnitude = config.graph.node_spacing.MAX_ATTRACTION_DISTANCE
+    } else if (magnitude < config.graph.node_spacing.MIN_REPULSION_DISTANCE) {
+      magnitude = config.graph.node_spacing.MIN_REPULSION_DISTANCE
     }
+
     // function = f(x) = ((distance - Standoff distance) ^ 3) / Dampening force
-    return Math.pow(magnitude - (STANDOFF_DISTANCE), 3) / Math.pow(STANDOFF_DISTANCE, 3)
+    return Math.pow(magnitude - (config.graph.node_spacing.STANDOFF_DISTANCE), 3) /
+      Math.pow(config.graph.node_spacing.STANDOFF_DISTANCE, 3)
   }
 
   invert_vector = function (vector) {

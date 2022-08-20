@@ -1,6 +1,6 @@
 // jest.config.js
 module.exports = {
-
+  setupFilesAfterEnv: ["./tests/setup_jest.js"],
   moduleFileExtensions: [
     'js',
     // 'ts',
