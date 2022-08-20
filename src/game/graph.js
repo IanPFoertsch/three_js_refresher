@@ -1,5 +1,4 @@
-// import { config } from '../app.config'
-
+import { Node } from '../node'
 
 class Graph {
   constructor() {
@@ -65,6 +64,7 @@ class Graph {
         return element / magnitude
       })
 
+      // var color_force = this.color_attraction(magnitude, pair_of_nodes)
       var force = this.universal_node_spacer(magnitude)
       var force_vector = unit_vector.map((element) => {
         return element * force
@@ -79,18 +79,19 @@ class Graph {
     //At the moment, our node forces array only has 1 element, so we just need to update the node's positions
     // Are we updating the movement vector?
     // With every tick, update position by force vector / ticks per second
-
     Object.keys(node_forces).forEach((node_identifier) => {
       var vector = node_forces[node_identifier].reduce((total_force, force_vector) => {
         this.add_vector(total_force, force_vector)
         return total_force
       })
 
-      //Why is the vector increasing? it should be decreasing as the nodes get closer together
-
       var node = this.get_nodes().find((node) => { return node.identifier == node_identifier })
       node.update_position_by_differential(vector)
     })
+  }
+
+  calculate_force_between_nodes(node_1, node_2) {
+
   }
 
   //TODO: We need to consolidate this to a linear algebra library
@@ -114,6 +115,16 @@ class Graph {
     })
   }
 
+  // color_attraction = function(vector_magnitude, pair_of_nodes) {
+  //   if (pair_of_nodes[0].color === pair_of_nodes[1].color) {
+  //     return 1.5
+  //   } else if (Node.COLOR_OUTPUT[pair_of_nodes[0].color].includes(pair_of_nodes[1].color)) {
+  //     return 0.2
+  //   } else {
+  //     return 0.1
+  //   }
+  // }
+
   universal_node_spacer = function (magnitude) {
     // TODO: make these values configurable
     var STANDOFF_DISTANCE = 15
@@ -131,7 +142,7 @@ class Graph {
       magnitude = min_distance
     }
     // function = f(x) = ((distance - Standoff distance) ^ 3) / Dampening force
-    return Math.pow(magnitude - (STANDOFF_DISTANCE), 3) / Math.pow(STANDOFF_DISTANCE, 2)
+    return Math.pow(magnitude - (STANDOFF_DISTANCE), 3) / Math.pow(STANDOFF_DISTANCE, 3)
   }
 
   invert_vector = function (vector) {

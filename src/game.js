@@ -47,7 +47,7 @@ class Game {
       if (config.graph.enable_force_directed_graph) {
         this.state.get_graph().update_node_forces()
       }
-    }, 100)
+    }, 10)
 
 
     this.labelRenderer = new CSS2DRenderer();

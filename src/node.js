@@ -29,7 +29,12 @@ class Node {
     // tier == number of points in the icon geometry
     THREE: 3,
     FOUR: 4,
-    FIVE: 5
+    FIVE: 5,
+    SIX: 6,
+    SEVEN: 7,
+    EIGHT: 8,
+    NINE: 9,
+    TEN: 10
   }
 
   static generate_identifier = function() {
@@ -82,25 +87,13 @@ class Node {
     ]
   }
 
-  static map_tier_from_icon = function(tier, position, color, scene, parent) {
-
-    switch(tier) {
-      case Node.TIERS.THREE:
-        return new NodeIcon(position, color, scene, tier, parent)
-      case Node.TIERS.FOUR:
-        return new NodeIcon(position, color, scene, tier, parent)
-      case Node.TIERS.FIVE:
-        return new NodeIcon(position, color, scene, tier, parent)
-    }
-  }
-
   constructor(scene, position, color, tier) {
     this.position = position
     this.color = color
     this.tier = tier
     this.identifier = Node.generate_identifier()
     this.link_points = this.create_link_points(scene)
-    this.icon = Node.map_tier_from_icon(tier, position, color, scene, this)
+    this.icon = new NodeIcon(position, color, scene, tier, this)
     this.force_vector = null
   }
 
@@ -145,7 +138,7 @@ class Node {
   }
 
 
-
+  //What color inputs does our node demand?
   demands_by_color() {
     if (this.tier === Node.TIERS.THREE) {
       //Three-tier nodes are producers only, accepting no inputs
@@ -197,6 +190,9 @@ class NodeIcon {
         return (45 * (Math.PI / 180))
       case Node.TIERS.FIVE:
         return (90 * (Math.PI / 180))
+      default:
+        return (90 * (Math.PI / 180))
+
     }
   }
 

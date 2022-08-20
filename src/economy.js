@@ -50,6 +50,7 @@ class Economy {
   }
 
   get_nodes = function() {
+
     return window.state.get_graph().get_nodes()
   }
 
@@ -73,6 +74,7 @@ class Economy {
   update() {
     //Update supply
     var current_supply = new GlobalSupply()
+
 
     this.get_links().forEach(link => {
       current_supply.increase_supply_for_color(
