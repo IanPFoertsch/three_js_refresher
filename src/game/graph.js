@@ -95,8 +95,7 @@ class Graph {
 
   node_link_force = function (node_1, node_2, unit_vector) {
     // is node_1 linked to node_2?
-    var link_attraction = (node_1.is_linked_to(node_2) ? 0.01 : 0)
-
+    var link_attraction = (node_1.is_linked_to_node_with_identifier(node_2.identifier) ? 0.05 : 0)
     return this.scalar_vector_multiply(link_attraction, unit_vector)
   }
 

@@ -1,6 +1,7 @@
 import * as THREE from 'three'
+
 class LinkPoint {
-  static offset = 3
+  static offset = 2.5
   static calculated_offsets = {}
   static calculate_offset = function (rotation) {
     if (LinkPoint.calculated_offsets[rotation] === undefined) {
