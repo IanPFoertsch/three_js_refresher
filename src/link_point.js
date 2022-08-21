@@ -15,7 +15,7 @@ class LinkPoint {
     return LinkPoint.calculated_offsets[rotation]
   }
 
-  constructor(position, scene, connection_number, parent_node) {
+  constructor(position, connection_number, parent_node) {
     this.geometry = new THREE.CircleGeometry(.5, 10);
     this.material = new THREE.MeshPhongMaterial({ color: 0xFFFFFF });
     this.mesh = new THREE.Mesh(this.geometry, this.material);
@@ -26,8 +26,7 @@ class LinkPoint {
     this.incoming_link = null
     this.outgoing_link = null
     this.update_position(position)
-    scene.add(this.mesh)
-
+    window.scene.add(this.mesh)
   }
 
   update_position(new_position) {

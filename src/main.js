@@ -14,21 +14,21 @@ import { config } from '../app.config'
 const game = new Game()
 
 function generate_default_start(game) {
-  game.add_node(new Node(game.scene, [-10, 10], Node.COLORS.RED, Node.TIERS.THREE))
-  game.add_node(new Node(game.scene, [10, -10], Node.COLORS.BLUE, Node.TIERS.THREE))
-  game.add_node(new Node(game.scene, [-2, 9], Node.COLORS.YELLOW, Node.TIERS.THREE))
+  game.add_node(new Node([-10, 10], Node.COLORS.RED, Node.TIERS.THREE))
+  game.add_node(new Node([10, -10], Node.COLORS.BLUE, Node.TIERS.THREE))
+  game.add_node(new Node([-2, 9], Node.COLORS.YELLOW, Node.TIERS.THREE))
 
-  game.add_node(new Node(game.scene, [-11, -8], Node.COLORS.VIOLET, Node.TIERS.FOUR))
-  game.add_node(new Node(game.scene, [1, 1], Node.COLORS.GREEN, Node.TIERS.FOUR))
-  game.add_node(new Node(game.scene, [-1, -8], Node.COLORS.ORANGE, Node.TIERS.FOUR))
+  game.add_node(new Node([-11, -8], Node.COLORS.VIOLET, Node.TIERS.FOUR))
+  game.add_node(new Node([1, 1], Node.COLORS.GREEN, Node.TIERS.FOUR))
+  game.add_node(new Node([-1, -8], Node.COLORS.ORANGE, Node.TIERS.FOUR))
 
-  game.add_node(new Node(game.scene, [-16, -12], Node.COLORS.VIOLET, Node.TIERS.FIVE))
-  game.add_node(new Node(game.scene, [7, 1], Node.COLORS.GREEN, Node.TIERS.FIVE))
-  game.add_node(new Node(game.scene, [-1, -15], Node.COLORS.ORANGE, Node.TIERS.FIVE))
+  game.add_node(new Node([-16, -12], Node.COLORS.VIOLET, Node.TIERS.FIVE))
+  game.add_node(new Node([7, 1], Node.COLORS.GREEN, Node.TIERS.FIVE))
+  game.add_node(new Node([-1, -15], Node.COLORS.ORANGE, Node.TIERS.FIVE))
 
-  game.add_node(new Node(game.scene, [-22, -18], Node.COLORS.RED, Node.TIERS.SIX))
-  game.add_node(new Node(game.scene, [14, 1], Node.COLORS.GREEN, Node.TIERS.SIX))
-  game.add_node(new Node(game.scene, [-1, -25], Node.COLORS.ORANGE, Node.TIERS.SIX))
+  game.add_node(new Node([-22, -18], Node.COLORS.RED, Node.TIERS.SIX))
+  game.add_node(new Node([14, 1], Node.COLORS.GREEN, Node.TIERS.SIX))
+  game.add_node(new Node([-1, -25], Node.COLORS.ORANGE, Node.TIERS.SIX))
 }
 
 const generate_world = function(game) {
@@ -50,13 +50,7 @@ generate_world(game)
 
 function animate() {
   requestAnimationFrame(animate)
-  // torus.rotation.x += 0.01;
-  // torus.rotation.y += 0.005;
-  // torus.rotation.z += 0.01;
-  // console.log("tick")
-  // game.update()
   game.render()
-  // controls.update()
 }
 
 
