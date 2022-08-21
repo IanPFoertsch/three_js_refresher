@@ -67,9 +67,7 @@ class Graph {
     // With every tick, update position by force vector / ticks per second
     Object.keys(node_forces).forEach((node_identifier) => {
       var vector = node_forces[node_identifier].reduce((total_force, force_vector) => {
-
-        this.add_vector(total_force, force_vector)
-        return total_force
+        return this.add_vector(total_force, force_vector)
       })
 
       var node = this.get_nodes().find((node) => { return node.identifier == node_identifier })
@@ -85,13 +83,7 @@ class Graph {
     var spacing_force = this.universal_node_spacer(magnitude, unit_vector) // forces should be a Vector, not a number
     var link_force = this.node_link_force(node_1, node_2, unit_vector)
 
-
-
-    //unit vector points from node_1 to node_2
     return this.sum_vectors([spacing_force, link_force])
-    // return unit_vector.map((element) => {
-    //   return element * spacing_force
-    // })
   }
 
   sum_vectors = function(vectors) {
@@ -130,7 +122,6 @@ class Graph {
     })
   }
 
-
   universal_node_spacer = function (magnitude, unit_vector) {
     if (magnitude > config.graph.node_spacing.MAX_ATTRACTION_DISTANCE) {
       magnitude = config.graph.node_spacing.MAX_ATTRACTION_DISTANCE
@@ -138,9 +129,10 @@ class Graph {
       magnitude = config.graph.node_spacing.MIN_REPULSION_DISTANCE
     }
 
+
     // function = f(x) = ((distance - Standoff distance) ^ 3) / Dampening force
     var spacing_force = Math.pow(magnitude - (config.graph.node_spacing.STANDOFF_DISTANCE), 3) /
-      Math.pow(config.graph.node_spacing.STANDOFF_DISTANCE, 2)
+      Math.pow(config.graph.node_spacing.STANDOFF_DISTANCE, 3)
 
     return this.scalar_vector_multiply(spacing_force, unit_vector)
   }
@@ -152,7 +144,10 @@ class Graph {
   }
 
   add_vector = function (vector_one, vector_two) {
-    return [vector_one[0] + vector_two[0], vector_one[1] += vector_two[1]]
+    return [
+      vector_one[0] + vector_two[0],
+      vector_one[1] + vector_two[1]
+    ]
   }
 
   scalar_vector_multiply = function(scalar, vector) {
