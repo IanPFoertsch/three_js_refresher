@@ -44,6 +44,12 @@ class LinkPoint {
     this.mesh.position.set(this.position[0], this.position[1], 0)
   }
 
+  is_linked_to_node_with_identifier(other_node_identifier) {
+    return this.get_linked_nodes().map((linked_node) => {
+      return linked_node.identifier
+    }).includes(other_node_identifier)
+  }
+
   get_linked_nodes() {
     var nodes = []
     if (this.incoming_link) {

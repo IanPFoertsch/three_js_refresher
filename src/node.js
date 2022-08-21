@@ -113,14 +113,14 @@ class Node {
     })
   }
 
-  is_linked_to(other_node) {
-    var linked_node_identifiers = this.link_points.map((link_point) => {
-      return link_point.get_linked_nodes().map((node) => {
-        return node.identifier
-      })
-    }).flat()
-
-    return linked_node_identifiers.includes(other_node.identifier)
+  is_linked_to_node_with_identifier(other_node_identifier) {
+    //TODO: This is still a bad way to check node linkage,
+    // as we pass this down to the link points, there's a circular check
+    // occuring in the links as the links check _both_ link points, including
+    // this one. We should maintain checking of directionality
+    return this.link_points.some((link_point) => {
+      return link_point.is_linked_to_node_with_identifier(other_node_identifier)
+    })
   }
 
   has_existing_link() {
