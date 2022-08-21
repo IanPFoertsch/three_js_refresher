@@ -45,7 +45,18 @@ class LinkPoint {
     this.mesh.position.set(this.position[0], this.position[1], 0)
   }
 
+  get_linked_nodes() {
+    var nodes = []
+    if (this.incoming_link) {
+      nodes.push(this.incoming_link.get_origin_node())
+    }
 
+    if (this.outgoing_link && this.outgoing_link.is_closed_link()) {
+      nodes.push(this.outgoing_link.get_destination_node())
+    }
+
+    return nodes
+  }
 
   has_existing_link() {
     return this.incoming_link !== null || this.outgoing_link !== null
@@ -71,6 +82,10 @@ class LinkPoint {
 
   get_node_color() {
     return this.parent_node.color
+  }
+
+  get_parent_node() {
+    return this.parent_node
   }
 
   register_incoming_link(incoming_link) {

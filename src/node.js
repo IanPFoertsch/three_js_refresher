@@ -112,6 +112,16 @@ class Node {
     })
   }
 
+  is_linked_to(other_node) {
+    var linked_node_identifiers = this.link_points.map((link_point) => {
+      return link_point.get_linked_nodes().map((node) => {
+        return node.identifier
+      })
+    }).flat()
+
+    return linked_node_identifiers.includes(other_node.identifier)
+  }
+
   has_existing_link() {
     return this.link_points.some(link_point => {
       return link_point.has_existing_link()

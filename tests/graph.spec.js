@@ -21,7 +21,6 @@ describe('Graph', () => {
 
       describe("when the nodes are closer than the configured standoff distance", () => {
         beforeEach(() => {
-          graph = new Graph
           node_1 = { position: [0, 0] }
           node_2 = { position: [0, config.graph.node_spacing.STANDOFF_DISTANCE / 2] }
         })
@@ -35,7 +34,6 @@ describe('Graph', () => {
 
       describe("when the nodes are exactly at the configured standoff distance", () => {
         beforeEach(() => {
-          graph = new Graph
           node_1 = { position: [0, 0] }
           node_2 = { position: [0, config.graph.node_spacing.STANDOFF_DISTANCE] }
         })
@@ -49,7 +47,6 @@ describe('Graph', () => {
 
       describe("when the nodes are farther than the standoff distance", () => {
         beforeEach(() => {
-          graph = new Graph
           node_1 = { position: [0, 0] }
           node_2 = { position: [0, config.graph.node_spacing.STANDOFF_DISTANCE * 2] }
         })
@@ -61,5 +58,25 @@ describe('Graph', () => {
         })
       })
     })
+
+    describe("when nodes are linked", () => {
+      beforeEach(() => {
+      })
+      describe("when the nodes are exactly at the configured standoff distance", () => {
+
+          beforeEach(() => {
+            node_1 = { position: [0, 0] }
+            node_2 = { position: [0, config.graph.node_spacing.STANDOFF_DISTANCE] }
+          })
+
+
+        it('the net force is exactly zero', () => {
+          var force_vector = graph.calculate_force_between_nodes(node_1, node_2)
+          expect(force_vector[0]).toEqualZero()
+          expect(force_vector[1]).toEqualZero()
+        })
+      })
+    })
+
   })
 })
