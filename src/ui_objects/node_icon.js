@@ -26,7 +26,7 @@ class NodeIcon {
     this.geometry.rotateZ(NodeIcon.rotate_z_degrees(tier))
     this.material = new THREE.MeshPhongMaterial({ color: Node.COLOR_HEX_CODES[color] })
     this.mesh = new THREE.Mesh(this.geometry, this.material)
-
+    this.mesh.userData.parent = this
     this.update_position(position)
     window.scene.add(this.mesh)
   }

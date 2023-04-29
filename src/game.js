@@ -32,7 +32,7 @@ class Game {
 
     this.currency_score = document.querySelector("#info #currency")
     this.currency_score.innerHTML = 100
-
+    console.log("setting the update_economy interval")
     window.setInterval(() => {
       this.update_economy()
       this.update_information_panel()

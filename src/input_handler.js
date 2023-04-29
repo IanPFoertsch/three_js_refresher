@@ -7,6 +7,9 @@ class InputHandler {
     this.state = game.state
     this.camera = game.camera
     this.raycaster = new THREE.Raycaster()
+    //Note: the nodes's position should be 0, but for some reason they were'nt being
+    // picked up via the raycaster. Setting the "Near" plane to -1 solved the issue
+    this.raycaster.near = -1
     this.mouse = new THREE.Vector2()
 
 
@@ -51,19 +54,20 @@ class InputHandler {
     var world_coordinates = this.get_world_intersection(event)
 
     var clicked_point = this.get_clicked_object(event)
+    console.log("This is the clicked point!", clicked_point)
     if (
       clicked_point !== undefined &&
       clicked_point.can_create_outgoing_link()
       ) {
-      var link = new Link()
+        var link = new Link()
+        link.set_origin(clicked_point)
+        this.state.register_open_link(link)
+      } else {
+        // mousedown not on a clickable object - start drag navigating
+        this.drag_navigation_origin_point = world_coordinates
+      }
 
-      link.set_origin(clicked_point)
-      this.state.register_open_link(link)
-    } else {
-      // mousedown not on a clickable object - start drag navigating
-      this.drag_navigation_origin_point = world_coordinates
-    }
-
+    link.set_origin(clicked_point)
     this.state.mouse_down = true
   }
 
@@ -86,7 +90,7 @@ class InputHandler {
       // If there's no open link, end drag navigating -> consolidated to cleanup step
     }
 
-    //Perform all cleanup here, regardless of state. Make this operations idempotent
+    //Perform all cleanup here, regardless of state. Make this operation idempotent
     this.drag_navigation_origin_point = null
     this.state.destroy_open_link()
     this.state.mouse_down = false
@@ -105,8 +109,9 @@ class InputHandler {
 
   get_clicked_object = function(mouse_event) {
     var intersects = this.get_intersecting_objects(mouse_event, this.state.get_graph().get_clickable_objects())
+
     //Note this returns our game object, not the mesh
-    return intersects.length === 0 ? undefined : intersects[0].object.userData.parent
+    return intersects.length === 0 ? undefined : intersects[0].object.userData.parent.node
   }
 
   get_intersecting_objects(mouse_event, objects_to_check) {
@@ -116,7 +121,6 @@ class InputHandler {
     this.set_mouse_coordinates(mouse_event, this.mouse)
     // Raycasting source: https://stackoverflow.com/a/12749287
     this.raycaster.setFromCamera(this.mouse, this.camera)
-
     return this.raycaster.intersectObjects(objects_to_check)
   }
 

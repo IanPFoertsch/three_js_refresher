@@ -23,10 +23,9 @@ class Graph {
   }
 
   get_clickable_objects = function() {
-    //Make this memoized?
-    return this.nodes.map(node => {
-      return node.get_link_points()
-    }).flat()
+    return this.nodes.map((node) => {
+      return node.get_clickable_component()
+    })
   }
 
   get_nodes = function() {

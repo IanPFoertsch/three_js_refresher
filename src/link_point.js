@@ -94,24 +94,12 @@ class LinkPoint {
     return this.parent_node
   }
 
-  register_incoming_link(incoming_link) {
-    this.incoming_link = incoming_link
-  }
-
-  register_outgoing_link(outgoing_link) {
-    this.outgoing_link = outgoing_link
-  }
-
   de_register_outgoing_link() {
     this.outgoing_link = null
   }
 
   de_register_incoming_link() {
     this.incoming_link = null
-  }
-
-  can_create_outgoing_link() {
-    return this.outgoing_link === null
   }
 
   dispose() {

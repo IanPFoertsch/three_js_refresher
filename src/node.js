@@ -1,6 +1,4 @@
-import * as THREE from 'three'
 
-import { LinkPoint } from "./link_point"
 import { NodeIcon } from "./ui_objects/node_icon"
 
 class Node {
@@ -93,59 +91,56 @@ class Node {
     this.color = color
     this.tier = tier
     this.identifier = Node.generate_identifier()
-    this.link_points = this.create_link_points()
     this.icon = new NodeIcon(position, color, tier, this)
     this.force_vector = null
+    this.incoming_links = {} // our registries of links are dictionaries on link ID for faster look up
+    this.outgoing_links = {} // our registries of links are dictionaries on link ID for faster look up
   }
 
   update_position_by_differential(position_differential) {
     this.position[0] += position_differential[0]
     this.position[1] += position_differential[1]
     this.icon.update_position(this.position)
-    this.link_points.map((link_point) => {
-      link_point.update_position(this.position)
-    })
+    // Do we need to update the origin of our outgoing links & the destination of our incoming links?
   }
 
-  get_link_points() {
-    return this.link_points.map(link_point => {
-      return link_point.mesh
-    })
+  get_clickable_component() {
+    return this.icon.mesh
   }
 
   is_linked_to_node_with_identifier(other_node_identifier) {
-    //TODO: This is still a bad way to check node linkage,
-    // as we pass this down to the link points, there's a circular check
-    // occuring in the links as the links check _both_ link points, including
-    // this one. We should maintain checking of directionality
-    return this.link_points.some((link_point) => {
-      return link_point.is_linked_to_node_with_identifier(other_node_identifier)
+    // has_outgoing_link_to_node?
+    var has_outgoing_link = this.outgoing_links.map((outgoing_link) => {
+      // detect if outgoing_link's destination node's identifier matches
+    })
+
+    var has_incoming_link_to_node = this.incoming_links.map((incoming_link) => {
+      // detect if incoming_links's origin node's identifier matches
     })
   }
 
   has_existing_link() {
-    return this.link_points.some(link_point => {
-      return link_point.has_existing_link()
-    })
+    // is the length of this.outgoing_links > 0?
+    // is the length of this.incoming_links > 0?
   }
 
-  create_link_points() {
-    var number_of_connections = 1
-    switch(this.tier) {
-      case Node.TIERS.THREE:
-        number_of_connections = 3
-        break;
-      case Node.TIERS.FOUR:
-        number_of_connections = 2
-        break;
-      default:
-        number_of_connections = 1
-        break;
+  can_create_outgoing_link() {
+    //TODO: fill in with logic to determine if we can/can't add additional links
+    return true
+  }
+
+  is_valid_link_to_destination(destination_node) {
+    // Can we add a link from this node to the destination node?
+    // TODO: Fill in additional logic to determine link validity
+
+    //We are the origin node
+    var color_compatible = Node.COLOR_OUTPUT[this.color].includes(destination_node.color)
+    if (!color_compatible) {
+      return false
     }
 
-    return [...Array(number_of_connections).keys()].map((connection_number) => {
-      return new LinkPoint(this.position, connection_number, this)
-    });
+    var teir_compatible = (this.tier == destination_node.tier - 1)
+    return teir_compatible
   }
 
 
@@ -163,21 +158,26 @@ class Node {
     this.demands_by_color().includes(input_color)
   }
 
-  is_linkable_to_origin(origin_link_point) {
-    //We are the destination node
-    var color_compatible = Node.COLOR_INPUT[this.color].includes(origin_link_point.parent_node.color)
-    if (!color_compatible) {
-      return false
-    }
+  register_incoming_link(incoming_link) {
+    this.incoming_links[incoming_link.id] = incoming_link
+  }
 
-    var teir_compatible = (this.tier == origin_link_point.parent_node.tier + 1)
-    return teir_compatible
+  register_outgoing_link(outgoing_link) {
+    this.outgoing_link[outgoing_link.id] = outgoing_link
+  }
+
+  de_register_outgoing_link(outgoing_link) {
+    this.outgoing_links[outgoing_link.id] = null
   }
 
   dispose() {
     //Dispose of linkpoints & propagate destroy down through them
-    this.link_points.forEach((link_point) => {
-      link_point.dispose()
+    //TODO: Amalgamate the incoming & outgoing links into one list for easier processing
+    this.incoming_links.forEach((link) => {
+      link.dispose()
+    })
+    this.outgoing_links.forEach((link) => {
+      link.dispose()
     })
     // dispose of the nodeIcon
     this.icon.dispose()
