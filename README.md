@@ -4,6 +4,7 @@
 
 # Local development
 1. `npm run dev` - run the dev server at localhost:9000
+1. `npm install` -> reinstall the dependencies
 1. `npm run test` -> Run the jest test suite
 
 # Build & Deploy

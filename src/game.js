@@ -10,8 +10,7 @@ import { config } from '../app.config'
 class Game {
   constructor() {
     this.node_counter = 0;
-    this.scene = new THREE.Scene()
-    window.scene = this.scene
+    window.scene = new THREE.Scene()
     this.state = new State()
     window.state = this.state
     window.game = this
@@ -100,7 +99,6 @@ class Game {
       //TODO: Nodes will be placed randomly but should move via a force directed graph algorithm
       this.add_node(
         new Node(
-          this.scene,
           [(Math.random() * 20 - 10), (Math.random() * 20 - 10)],
           random_color,
           Node.TIERS.FOUR
@@ -153,12 +151,12 @@ class Game {
   }
 
   render = function() {
-    this.renderer.render(this.scene, this.camera)
-    this.labelRenderer.render(this.scene, this.camera)
+    this.renderer.render(window.scene, this.camera)
+    this.labelRenderer.render(window.scene, this.camera)
   }
 
   add_world_plane = function(plane) {
-    this.scene.add(plane)
+    window.scene.add(plane)
     this.state.register_world_plane(plane)
   }
 
@@ -167,7 +165,7 @@ class Game {
   }
 
   add_light = function(light) {
-    this.scene.add(light)
+    window.scene.add(light)
   }
 
 }

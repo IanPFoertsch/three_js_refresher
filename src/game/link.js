@@ -35,6 +35,25 @@ class Link {
     return this.origin_link_point.is_valid_link_to_destination(destination_link_point)
   }
 
+  is_closed_link() {
+    return this.destination_link_point !== null
+  }
+
+  get_origin_node() {
+    if (this.origin_link_point) {
+      return this.origin_link_point.get_parent_node()
+    }
+    return null
+  }
+
+  get_destination_node() {
+    if (this.destination_link_point) {
+      return this.destination_link_point.get_parent_node()
+    }
+    return null
+
+  }
+
   set_origin(origin_link_point) {
     this.origin_link_point = origin_link_point
     this.origin_link_point.register_outgoing_link(this)
@@ -54,7 +73,6 @@ class Link {
   }
 
   update_render() {
-    console.log("updating render in link")
     this.ui_representation.set_origin(
       this.origin_link_point.position[0],
       this.origin_link_point.position[1]

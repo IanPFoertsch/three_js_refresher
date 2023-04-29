@@ -1,6 +1,7 @@
 import * as THREE from 'three'
+
 class LinkPoint {
-  static offset = 3
+  static offset = 2.5
   static calculated_offsets = {}
   static calculate_offset = function (rotation) {
     if (LinkPoint.calculated_offsets[rotation] === undefined) {
@@ -15,7 +16,7 @@ class LinkPoint {
     return LinkPoint.calculated_offsets[rotation]
   }
 
-  constructor(position, scene, connection_number, parent_node) {
+  constructor(position, connection_number, parent_node) {
     this.geometry = new THREE.CircleGeometry(.5, 10);
     this.material = new THREE.MeshPhongMaterial({ color: 0xFFFFFF });
     this.mesh = new THREE.Mesh(this.geometry, this.material);
@@ -26,8 +27,7 @@ class LinkPoint {
     this.incoming_link = null
     this.outgoing_link = null
     this.update_position(position)
-    scene.add(this.mesh)
-
+    window.scene.add(this.mesh)
   }
 
   update_position(new_position) {
@@ -45,7 +45,24 @@ class LinkPoint {
     this.mesh.position.set(this.position[0], this.position[1], 0)
   }
 
+  is_linked_to_node_with_identifier(other_node_identifier) {
+    return this.get_linked_nodes().map((linked_node) => {
+      return linked_node.identifier
+    }).includes(other_node_identifier)
+  }
 
+  get_linked_nodes() {
+    var nodes = []
+    if (this.incoming_link) {
+      nodes.push(this.incoming_link.get_origin_node())
+    }
+
+    if (this.outgoing_link && this.outgoing_link.is_closed_link()) {
+      nodes.push(this.outgoing_link.get_destination_node())
+    }
+
+    return nodes
+  }
 
   has_existing_link() {
     return this.incoming_link !== null || this.outgoing_link !== null
@@ -71,6 +88,10 @@ class LinkPoint {
 
   get_node_color() {
     return this.parent_node.color
+  }
+
+  get_parent_node() {
+    return this.parent_node
   }
 
   register_incoming_link(incoming_link) {

@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 
-import {LinkPoint} from "./link_point"
+import { LinkPoint } from "./link_point"
+import { NodeIcon } from "./ui_objects/node_icon"
 
 class Node {
   static node_count = 0
@@ -87,13 +88,13 @@ class Node {
     ]
   }
 
-  constructor(scene, position, color, tier) {
+  constructor(position, color, tier) {
     this.position = position
     this.color = color
     this.tier = tier
     this.identifier = Node.generate_identifier()
-    this.link_points = this.create_link_points(scene)
-    this.icon = new NodeIcon(position, color, scene, tier, this)
+    this.link_points = this.create_link_points()
+    this.icon = new NodeIcon(position, color, tier, this)
     this.force_vector = null
   }
 
@@ -112,13 +113,23 @@ class Node {
     })
   }
 
+  is_linked_to_node_with_identifier(other_node_identifier) {
+    //TODO: This is still a bad way to check node linkage,
+    // as we pass this down to the link points, there's a circular check
+    // occuring in the links as the links check _both_ link points, including
+    // this one. We should maintain checking of directionality
+    return this.link_points.some((link_point) => {
+      return link_point.is_linked_to_node_with_identifier(other_node_identifier)
+    })
+  }
+
   has_existing_link() {
     return this.link_points.some(link_point => {
       return link_point.has_existing_link()
     })
   }
 
-  create_link_points(scene) {
+  create_link_points() {
     var number_of_connections = 1
     switch(this.tier) {
       case Node.TIERS.THREE:
@@ -133,7 +144,7 @@ class Node {
     }
 
     return [...Array(number_of_connections).keys()].map((connection_number) => {
-      return new LinkPoint(this.position, scene, connection_number, this)
+      return new LinkPoint(this.position, connection_number, this)
     });
   }
 
@@ -177,47 +188,6 @@ class Node {
     this.icon.dispose()
     //The node class itself has no THREE.js components,
     // so we don't need to dispose of mesh, geometry, or remove it from the scene
-  }
-}
-
-class NodeIcon {
-
-  static rotate_z_degrees = function (tier) {
-    switch (tier) {
-      case Node.TIERS.THREE:
-        return (60 * (Math.PI / 180))
-      case Node.TIERS.FOUR:
-        return (45 * (Math.PI / 180))
-      case Node.TIERS.FIVE:
-        return (90 * (Math.PI / 180))
-      default:
-        return (90 * (Math.PI / 180))
-
-    }
-  }
-
-  constructor(position, color, scene, tier, node) {
-    this.node = node
-
-    this.geometry = new THREE.ConeGeometry(4, 2, tier);
-    this.geometry.rotateX(90 * (Math.PI / 180))
-    this.geometry.rotateZ(NodeIcon.rotate_z_degrees(tier))
-    this.material = new THREE.MeshPhongMaterial({ color: Node.COLOR_HEX_CODES[color] })
-    this.mesh = new THREE.Mesh(this.geometry, this.material)
-
-    this.update_position(position)
-    scene.add(this.mesh)
-  }
-
-  update_position(new_position) {
-    this.position = new_position
-    this.mesh.position.set(this.position[0], this.position[1], 0)
-  }
-
-  dispose() {
-    this.geometry.dispose()
-    this.material.dispose()
-    window.scene.remove(this.mesh)
   }
 }
 
