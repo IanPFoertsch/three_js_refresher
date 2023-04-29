@@ -52,4 +52,32 @@ describe('Node', () => {
       })
     })
   })
+
+  describe("is_linkable_to_origin", () => {
+    let origin_node, destination_node
+    let origin_node_link_point
+
+    beforeEach(() => {
+      origin_node = new Node(position, color, tier)
+      origin_node_link_point = {
+        parent_node: origin_node
+      }
+    });
+
+    it('with an incompatible color it is not linkable', () => {
+      destination_node = new  Node(position, Node.COLORS.BLUE, Node.TIERS.FOUR)
+      expect(destination_node.is_linkable_to_origin(origin_node_link_point)).toBe(false)
+    })
+
+    it('with a compatible color but incompatible tier it is not linkable', () => {
+      destination_node = new Node(position, Node.COLORS.ORANGE, Node.TIERS.FIVE)
+      expect(destination_node.is_linkable_to_origin(origin_node_link_point)).toBe(false)
+    })
+
+    it('with a compatible color and compatible tier it is linkable', () => {
+      destination_node = new Node(position, Node.COLORS.ORANGE, Node.TIERS.FOUR)
+      expect(destination_node.is_linkable_to_origin(origin_node_link_point)).toBe(true)
+    })
+
+  })
 })

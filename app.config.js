@@ -3,8 +3,9 @@ var standoff_distance = 15
 const config = {
   //TODO: Implement a less brittle form of feature flagging
   graph: {
-    create_nodes: false,
-    destroy_nodes: false,
+    create_nodes: true,
+    destroy_nodes: true,
+    random_node_creation: true,
     enable_force_directed_graph: true,
     node_spacing: {
       STANDOFF_DISTANCE: standoff_distance,
@@ -16,8 +17,6 @@ const config = {
     }
 
   },
-
-
 }
 
 export { config }

@@ -166,17 +166,12 @@ class Node {
   is_linkable_to_origin(origin_link_point) {
     //We are the destination node
     var color_compatible = Node.COLOR_INPUT[this.color].includes(origin_link_point.parent_node.color)
-    return color_compatible
-    // if (!color_compatible) {
-    //   return false
-    // }
+    if (!color_compatible) {
+      return false
+    }
 
-    // ------------------
-    // LINKAGES BY TIER
-    // Nodes can only link to the same tier and the one above.
-    // 3-tier nodes can only link to 3-tier and 4-tier nodes
-    // 4-tier nodes can only link to 4-tier and 5-tier nodes, etc
-
+    var teir_compatible = (this.tier == origin_link_point.parent_node.tier + 1)
+    return teir_compatible
   }
 
   dispose() {
